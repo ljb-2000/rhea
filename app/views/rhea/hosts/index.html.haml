@@ -1,0 +1,28 @@
+%table.table.table-striped
+  %thead
+    %tr
+      %th Host
+      %th Last pod started
+      %th Queues
+      %th
+  %tbody
+    - @hostnames_hosts.each do |hostname, host|
+      %tr
+        %td= hostname
+        %td
+          - if started_at = host[:last_started_at]
+            = time_ago_in_words(started_at)
+            ago
+        %td
+          %table.table.table-striped.table-bordered
+            %tbody
+              - host[:queue_identifers_phases].each do |queue_identifer, phases|
+                %tr
+                  %td= queue_identifer
+                  %td= phases.length
+                  %td
+                    - uniq_phases = phases.uniq
+                    - if uniq_phases.length == 1
+                      = uniq_phases.first
+                    - else
+                      = phases.sort.join(', ')

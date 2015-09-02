@@ -1,0 +1,46 @@
+.row
+  .col-md-8
+    = form_tag update_all_workers_path, method: 'POST' do
+      = hidden_field_tag :redirect_to, request.fullpath
+      %table.table.table-striped
+        %thead
+          %tr
+            %th Queues
+            %th Jobs
+            %th Running Workers
+            %th Worker Processes
+            %th Worker Processes
+        %tbody
+          - @queue_identifiers_workers_counts.each do |queue_identifier, workers_count|
+            %tr
+              %td= queue_identifier
+              %td= @queue_names_queues[queue_identifier].try(:jobs_count) || 0
+              %td= @queue_identifiers_worker_counts[queue_identifier] || 0
+              %td= workers_count
+              %td= text_field_tag "queue_identifiers_distributed_worker_counts[#{queue_identifier}]", nil, class: 'form-control', style: 'width: 50px;'
+          %tr
+            %td
+            %td
+            %td
+            %td
+            %td= submit_tag 'Save', class: 'btn btn-default'
+
+  .col-md-4
+    .panel.panel-default
+      .panel-heading Start
+      .panel-body
+        = form_tag start_workers_path, method: 'POST' do
+          = hidden_field_tag :redirect_to, request.fullpath
+          %table.table
+            %thead
+              %tr
+                %th
+                  Queues
+                  %span.text-info{ title: "In Resque format, e.g. 'queue1,queue2'" }
+                    ?
+                %th Worker Processes
+            %tbody
+              %tr
+                %td= text_field_tag :queue_identifier, nil, class: 'form-control', style: 'width: 180px;', required: 'required'
+                %td= text_field_tag :workers_count, nil, class: 'form-control', style: 'width: 50px;', required: 'required'
+          = submit_tag 'Start', class: 'btn btn-default'

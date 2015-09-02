@@ -1,0 +1,30 @@
+!!! 5
+%html(lang="en")
+  %head
+    %meta(charset="utf-8")
+    %meta(http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1")
+    %meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    %title= content_for?(:title) ? yield(:title) : app_name
+    = csrf_meta_tags
+    = stylesheet_link_tag 'rhea/application'
+    = javascript_include_tag 'rhea/application'
+
+  %body
+    .navbar.navbar-default.navbar-static-top
+      .container
+        %button.navbar-toggle(type="button" data-toggle="collapse" data-target=".navbar-responsive-collapse")
+        = link_to app_name, rhea_path, class: 'navbar-brand'
+        .navbar-collapse.collapse.navbar-responsive-collapse
+          %ul.nav.navbar-nav
+            %li{ class: params[:controller] == 'rhea/workers' ? 'active' : '' }
+              = link_to 'Workers', workers_path
+            %li{ class: params[:controller] == 'rhea/hosts' ? 'active' : '' }
+              = link_to 'Hosts', hosts_path
+            %li{ class: params[:controller] == 'rhea/services' ? 'active' : '' }
+              = link_to 'Services', services_path
+
+    .container
+      .row
+        .col-lg-12
+          = bootstrap_flash
+          = yield
