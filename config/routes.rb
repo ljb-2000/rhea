@@ -4,6 +4,7 @@ Rhea::Engine.routes.draw do
   resources :services, only: [:index]
   resources :workers, only: [:index] do
     collection do
+      get :delete
       post :start
       post :update_all
     end
@@ -11,6 +12,5 @@ Rhea::Engine.routes.draw do
   
   namespace 'api' do
     get '/jobs', to: 'jobs#index'
-    get '/queues/:queue', to: 'queues#show'
   end
 end

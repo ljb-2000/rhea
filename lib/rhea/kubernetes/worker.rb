@@ -1,30 +1,32 @@
 module Rhea
   module Kubernetes
     class Worker
+      NAMESPACE = 'default'
+
       class << self
-        def scale(queue_identifier, workers_count)
-          key = queue_identifier_to_key(queue_identifier)
-          if workers_count == 0
-            delete_replica(queue_identifier)
-            return
-          end
+        def scale(command, workers_count)
+          key = command_to_key(command)
           if is_replica_running?(key)
-            scale_replica(queue_identifier, workers_count)
+            scale_replica(command, workers_count)
           else
-            start_replica(queue_identifier, workers_count)
+            start_replica(command, workers_count)
           end
         end
 
-        def queue_identifiers_workers_counts
+        def destroy(command)
+          delete_replica(command)
+        end
+
+        def commands_workers_counts
           controllers = api.get_replication_controllers
-          queue_identifiers_workers_counts = controllers.map do |controller|
-            queue_identifier = controller.spec.template.metadata.annotations.try(:rhea_queue_identifier)
-            next(nil) if queue_identifier.nil?
+          commands_workers_counts = controllers.map do |controller|
+            command = controller.spec.template.metadata.annotations.try(:rhea_command)
+            next(nil) if command.nil?
             workers_count = controller.status.replicas
-            [queue_identifier, workers_count]
+            [command, workers_count]
           end.compact
-          queue_identifiers_workers_counts = queue_identifiers_workers_counts.sort_by(&:first)
-          Hash[queue_identifiers_workers_counts]
+          commands_workers_counts = commands_workers_counts.sort_by(&:first)
+          Hash[commands_workers_counts]
         end
 
         private
@@ -33,10 +35,10 @@ module Rhea
           @api ||= Rhea::Kubernetes::Api.new
         end
 
-        def queue_identifier_to_key(queue_identifier)
-          queue_hash = Digest::MD5.hexdigest(queue_identifier)[0..3]
-          queue_identifier_for_host = queue_identifier.gsub(/[^-a-z0-9]+/i, '-')
-          key = "#{key_prefix}#{queue_hash}-#{queue_identifier_for_host}"
+        def command_to_key(command)
+          command_hash = Digest::MD5.hexdigest(command)[0..3]
+          command_for_host = command.downcase.gsub(/[^-a-z0-9]+/i, '-')
+          key = "#{key_prefix}#{command_hash}-#{command_for_host}"
           max_host_name_length = 64
           key = key[0,max_host_name_length]
           key
@@ -46,26 +48,28 @@ module Rhea
           api.get_replication_controllers(label_selector: "name=#{key}").length > 0
         end
 
-        def delete_replica(queue_identifier)
-          key = queue_identifier_to_key(queue_identifier)
-          scale_replica(queue_identifier, 0)
-          # TODO: We should delete the RC instead of scaling it to 0, but deleting it
-          # sends a kill signal that doesn't gracefully stop Resque worker processes.
-          # binding.pry
-          # api.delete_replication_controller(key)
+        def delete_replica(command)
+          # NOTE: Deleting the rc sends a kill signal that doesn't gracefully stop Resque worker processes.
+          key = command_to_key(command)
+          api.delete_replication_controller(key, NAMESPACE)
         end
 
-        def start_replica(queue_identifier, workers_count)
-          key = queue_identifier_to_key(queue_identifier)
+        def start_replica(command, workers_count)
+          key = command_to_key(command)
+          parsed_command = parse_command(command)
+          raw_command = parsed_command[:raw_command]
+          env_vars = parsed_command[:env_vars]
+          formatted_env_vars = format_env_vars(env_vars)
+
           controller = Kubeclient::ReplicationController.new
           controller.metadata = {
             "name" => key,
-            "namespace" => 'default',
+            "namespace" => NAMESPACE,
             "labels" => {
               "name" => key
             },
             "annotations" => {
-              "rhea_queue_identifier" => queue_identifier
+              "rhea_command" => command
             }
           }
           controller.spec = {
@@ -79,7 +83,7 @@ module Rhea
                   "name" => key
                 },
                 "annotations" => {
-                  "rhea_queue_identifier" => queue_identifier
+                  "rhea_command" => command
                 }
               },
               "spec" => {
@@ -87,7 +91,8 @@ module Rhea
                   {
                     "name" => key,
                     "image" => Rhea.settings[:image],
-                    "env" => get_env_vars(queue_identifier)
+                    "env" => formatted_env_vars,
+                    "command" => raw_command.split(/\s+/)
                   }
                 ],
                 "imagePullSecrets" => [
@@ -101,18 +106,33 @@ module Rhea
           api.create_replication_controller(controller)
         end
 
-        def scale_replica(queue_identifier, workers_count)
-          key = queue_identifier_to_key(queue_identifier)
+        def scale_replica(command, workers_count)
+          key = command_to_key(command)
           controller = api.get_replication_controllers(label_selector: "name=#{key}").first
           controller.spec.replicas = workers_count
           api.update_replication_controller(controller)
         end
 
-        def get_env_vars(queue_identifier)
-          defaults = {
-            'QUEUE' => queue_identifier
+        def parse_command(command)
+          match = command.match(/((?:[A-Z]+=[^\s]+\s+)+)?(.+)/)
+          env_vars_string = match[1]
+          raw_command = match[2]
+          env_vars = {}
+          if env_vars_string.present?
+            env_vars_strings = env_vars_string.strip.split(/\s+/)
+            env_vars_strings.each do |string|
+              name, value = string.split('=')
+              env_vars[name] = value
+            end
+          end
+          {
+            raw_command: raw_command,
+            env_vars: env_vars
           }
-          hash = defaults.merge(Rhea.settings[:env_vars])
+        end
+
+        def format_env_vars(env_vars)
+          hash = env_vars.merge(Rhea.settings[:env_vars])
           hash.map do |name, value|
             {
               'name' => name,
