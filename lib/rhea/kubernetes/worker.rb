@@ -63,41 +63,36 @@ module Rhea
 
           controller = Kubeclient::ReplicationController.new
           controller.metadata = {
-            "name" => key,
-            "namespace" => NAMESPACE,
-            "labels" => {
-              "name" => key
+            'name' => key,
+            'namespace' => NAMESPACE,
+            'labels' => {
+              'name' => key
             },
-            "annotations" => {
-              "rhea_command" => command
+            'annotations' => {
+              'rhea_command' => command
             }
           }
           controller.spec = {
-            "replicas" => workers_count,
-            "selector" => {
-              "name" => key
+            'replicas' => workers_count,
+            'selector' => {
+              'name' => key
             },
-            "template" => {
-              "metadata" => {
-                "labels" => {
-                  "name" => key
+            'template' => {
+              'metadata' => {
+                'labels' => {
+                  'name' => key
                 },
-                "annotations" => {
-                  "rhea_command" => command
+                'annotations' => {
+                  'rhea_command' => command
                 }
               },
-              "spec" => {
-                "containers" => [
+              'spec' => {
+                'containers' => [
                   {
-                    "name" => key,
-                    "image" => Rhea.settings[:image],
-                    "env" => formatted_env_vars,
-                    "command" => raw_command.split(/\s+/)
-                  }
-                ],
-                "imagePullSecrets" => [
-                  {
-                    "name" => "myregistrykey"
+                    'name' => key,
+                    'image' => Rhea.settings[:image],
+                    'env' => formatted_env_vars,
+                    'command' => raw_command.split(/\s+/)
                   }
                 ]
               }

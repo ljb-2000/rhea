@@ -9,7 +9,7 @@ module Rhea
           pods.each do |pod|
             command = pod.metadata.annotations.rhea_command
             next if command.nil?
-            hostname = pod.spec.host
+            hostname = pod.spec.nodeName
 
             started_at = pod.status.startTime
             if started_at
