@@ -1,29 +1,32 @@
 .row
   .col-md-7
-    = form_tag update_all_workers_path, method: 'POST' do
-      = hidden_field_tag :redirect_to, request.fullpath
-      %table.table.table-striped
-        %thead
-          %tr
-            %th Command
-            %th Workers
-            %th Desired Workers
-            %th
-        %tbody
-          - @commands_workers_counts.each do |command, workers_count|
+    - if @commands_workers_counts.blank?
+      %p Start up some workers! &#x2192;
+    - else
+      = form_tag update_all_workers_path, method: 'POST' do
+        = hidden_field_tag :redirect_to, request.fullpath
+        %table.table.table-striped
+          %thead
             %tr
-              %td= command
-              %td= workers_count
+              %th Command
+              %th Workers
+              %th Desired Workers
+              %th
+          %tbody
+            - @commands_workers_counts.each do |command, workers_count|
+              %tr
+                %td= command
+                %td= workers_count
+                %td
+                  = text_field_tag "commands_worker_counts[#{command}]", nil, class: 'form-control', style: 'width: 50px;'
+                %td
+                  - if workers_count == 0
+                    = link_to 'Delete', delete_workers_path(command: CGI.escape(command)), class: 'btn btn-danger', style: 'margin-left: 10px;'
+            %tr
               %td
-                = text_field_tag "commands_worker_counts[#{command}]", nil, class: 'form-control', style: 'width: 50px;'
               %td
-                - if workers_count == 0
-                  = link_to 'Delete', delete_workers_path(command: CGI.escape(command)), class: 'btn btn-danger', style: 'margin-left: 10px;'
-          %tr
-            %td
-            %td
-            %td= submit_tag 'Save', class: 'btn btn-default'
-            %td
+              %td= submit_tag 'Save', class: 'btn btn-default'
+              %td
 
   .col-md-5
     .panel.panel-default
