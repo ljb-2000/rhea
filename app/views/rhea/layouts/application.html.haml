@@ -20,6 +20,8 @@
               = link_to 'Commands', commands_path
             %li{ class: params[:controller] == 'rhea/hosts' ? 'active' : '' }
               = link_to 'Hosts', hosts_path
+            %li{ class: params[:controller] == 'rhea/events' ? 'active' : '' }
+              = link_to 'Events', events_path
             %li{ class: params[:controller] == 'rhea/services' ? 'active' : '' }
               = link_to 'Services', services_path
 

@@ -1,0 +1,18 @@
+%table.table.table-striped
+  %thead
+    %tr
+      %th Time
+      %th Host
+      %th Message
+      %th Type
+      %th Resource Type
+      %th Resource ID
+  %tbody
+    - @events.each do |event|
+      %tr
+        %td{ style: 'white-space: nowrap;' }= event.created_at.in_time_zone("Pacific Time (US & Canada)")
+        %td= event.hostname
+        %td= simple_format(event.message)
+        %td= event.type
+        %td= event.resource_type
+        %td= event.resource_id
