@@ -4,6 +4,13 @@ Rhea
 Overview
 --------
 
+TODO
+
+"Rhea"?
+-------
+
+Rhea is a Greek Titan associated with ease, comfort, and fertility. In her 21st century gem form, she lets you easily and comfortably birth many Kubernetes pods.
+
 License
 -------
 
