@@ -1,11 +1,10 @@
 Rhea::Engine.routes.draw do
-  get '/', to: 'workers#index', as: 'rhea'
+  get '/', to: 'commands#index', as: 'rhea'
   resources :hosts, only: [:index]
   resources :services, only: [:index]
-  resources :workers, only: [:index] do
+  resources :commands, only: [:index, :create] do
     collection do
       get :delete
-      post :start
       post :update_all
     end
   end

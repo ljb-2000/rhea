@@ -1,32 +1,32 @@
 module Rhea
   module Kubernetes
-    class Worker
+    class Command
       NAMESPACE = 'default'
 
       class << self
-        def scale(command, workers_count)
+        def scale(command, process_count)
           key = command_to_key(command)
-          if is_replica_running?(key)
-            scale_replica(command, workers_count)
+          if is_replica_controller_running?(key)
+            scale_replica_controller(command, process_count)
           else
-            start_replica(command, workers_count)
+            start_replica_controller(command, process_count)
           end
         end
 
         def destroy(command)
-          delete_replica(command)
+          delete_replica_controller(command)
         end
 
-        def commands_workers_counts
+        def commands_process_counts
           controllers = api.get_replication_controllers
-          commands_workers_counts = controllers.map do |controller|
+          commands_process_counts = controllers.map do |controller|
             command = controller.spec.template.metadata.annotations.try(:rhea_command)
             next(nil) if command.nil?
-            workers_count = controller.status.replicas
-            [command, workers_count]
+            process_count = controller.status.replicas
+            [command, process_count]
           end.compact
-          commands_workers_counts = commands_workers_counts.sort_by(&:first)
-          Hash[commands_workers_counts]
+          commands_process_counts = commands_process_counts.sort_by(&:first)
+          Hash[commands_process_counts]
         end
 
         private
@@ -44,17 +44,17 @@ module Rhea
           key
         end
 
-        def is_replica_running?(key)
+        def is_replica_controller_running?(key)
           api.get_replication_controllers(label_selector: "name=#{key}").length > 0
         end
 
-        def delete_replica(command)
+        def delete_replica_controller(command)
           # NOTE: Deleting the rc sends a kill signal that doesn't gracefully stop Resque worker processes.
           key = command_to_key(command)
           api.delete_replication_controller(key, NAMESPACE)
         end
 
-        def start_replica(command, workers_count)
+        def start_replica_controller(command, process_count)
           key = command_to_key(command)
           parsed_command = parse_command(command)
           raw_command = parsed_command[:raw_command]
@@ -73,7 +73,7 @@ module Rhea
             }
           }
           controller.spec = {
-            'replicas' => workers_count,
+            'replicas' => process_count,
             'selector' => {
               'name' => key
             },
@@ -101,10 +101,10 @@ module Rhea
           api.create_replication_controller(controller)
         end
 
-        def scale_replica(command, workers_count)
+        def scale_replica_controller(command, process_count)
           key = command_to_key(command)
           controller = api.get_replication_controllers(label_selector: "name=#{key}").first
-          controller.spec.replicas = workers_count
+          controller.spec.replicas = process_count
           api.update_replication_controller(controller)
         end
 

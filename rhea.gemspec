@@ -3,7 +3,7 @@ require File.expand_path('../lib/rhea/version', __FILE__)
 Gem::Specification.new do |s|
   s.authors       = ['Tom Benner']
   s.email         = ['tombenner@gmail.com']
-  s.description = s.summary = %q{Distributed workers}
+  s.description = s.summary = %q{Process management via Kubernetes}
   s.homepage      = 'https://github.com/EnteloEngineering/rhea'
 
   s.files         = `git ls-files`.split($\)

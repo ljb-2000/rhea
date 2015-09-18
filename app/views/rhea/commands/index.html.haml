@@ -1,27 +1,27 @@
 .row
   .col-md-7
-    - if @commands_workers_counts.blank?
-      %p Start up some workers! &#x2192;
+    - if @commands_process_counts.blank?
+      %p Create a command! &#x2192;
     - else
-      = form_tag update_all_workers_path, method: 'POST' do
+      = form_tag update_all_commands_path, method: 'POST' do
         = hidden_field_tag :redirect_to, request.fullpath
         %table.table.table-striped
           %thead
             %tr
               %th Command
-              %th Workers
-              %th Desired Workers
+              %th Processes
+              %th Desired Processes
               %th
           %tbody
-            - @commands_workers_counts.each do |command, workers_count|
+            - @commands_process_counts.each do |command, process_count|
               %tr
                 %td= command
-                %td= workers_count
+                %td= process_count
                 %td
-                  = text_field_tag "commands_worker_counts[#{command}]", nil, class: 'form-control', style: 'width: 50px;'
+                  = text_field_tag "commands_process_counts[#{command}]", nil, class: 'form-control', style: 'width: 50px;'
                 %td
-                  - if workers_count == 0
-                    = link_to 'Delete', delete_workers_path(command: CGI.escape(command)), class: 'btn btn-danger', style: 'margin-left: 10px;'
+                  - if process_count == 0
+                    = link_to 'Delete', delete_commands_path(command: CGI.escape(command)), class: 'btn btn-danger', style: 'margin-left: 10px;'
             %tr
               %td
               %td
@@ -33,20 +33,20 @@
       .panel-heading
         %h4 New Command
       .panel-body
-        = form_tag start_workers_path, method: 'POST' do
+        = form_tag commands_path, method: 'POST' do
           = hidden_field_tag :redirect_to, request.fullpath
           %table.table
             %thead
               %tr
                 %th Type
                 %th Input
-                %th Workers
+                %th Processes
             %tbody
               %tr
                 %td= select_tag :command_type_key, options_for_select(Rhea::CommandType.options_for_select, Rhea.settings[:default_command_type_key]), class: 'form-control', style: 'width: 90px;', required: 'required'
                 %td= text_field_tag :command_type_input, nil, class: 'form-control', style: 'width: 230px;', required: 'required'
-                %td= text_field_tag :workers_count, nil, class: 'form-control', style: 'width: 50px;', required: 'required'
-          = submit_tag 'Start', class: 'btn btn-default'
+                %td= text_field_tag :process_count, nil, class: 'form-control', style: 'width: 50px;', required: 'required'
+          = submit_tag 'Create', class: 'btn btn-default'
 
     .panel.panel-default
       .panel-heading
