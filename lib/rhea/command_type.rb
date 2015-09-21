@@ -16,7 +16,7 @@ module Rhea
       {
         key: 'sidekiq',
         name: 'Sidekiq',
-        format: 'sidekiq $INPUT'
+        format: 'bundle exec sidekiq $INPUT'
       }
     ]
 
