@@ -41,6 +41,8 @@ module Rhea
           key = "#{key_prefix}#{command_hash}-#{command_for_host}"
           max_host_name_length = 64
           key = key[0,max_host_name_length]
+          # The key can't end with a '-'
+          key.gsub!(/\-+$/, '')
           key
         end
 
