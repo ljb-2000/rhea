@@ -2,6 +2,7 @@
   %thead
     %tr
       %th Time
+      %th
       %th Host
       %th Message
       %th Type
@@ -11,6 +12,9 @@
     - @events.each do |event|
       %tr
         %td{ style: 'white-space: nowrap;' }= event.created_at.in_time_zone("Pacific Time (US & Canada)")
+        %td{ style: 'white-space: nowrap;' }
+          = time_ago_in_words(event.created_at.in_time_zone("Pacific Time (US & Canada)"), include_seconds: true)
+          ago
         %td= event.hostname
         %td= simple_format(event.message)
         %td= event.type
