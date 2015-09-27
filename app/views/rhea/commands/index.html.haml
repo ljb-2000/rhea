@@ -1,28 +1,38 @@
 .row
   .col-md-7
-    - if @commands_process_counts.blank?
-      %p Create a command! &#x2192;
+    .pull-right
+      = form_tag commands_path, method: 'GET', class: 'form-inline' do
+        .form-group
+          = label_tag :image, 'Image:', style: 'margin-right: 5px; font-size: 12px; font-weight: normal;'
+          = select_tag :image, options_for_select([['All', nil]] + @images, params[:image].presence), class: 'form-control input-sm', onchange: "$(this).closest('form').submit();"
+    %h3 Commands
+    %br
+    - if @commands.blank?
+      %p No commands found.
     - else
       = form_tag update_all_commands_path, method: 'POST' do
         = hidden_field_tag :redirect_to, request.fullpath
         %table.table.table-striped
           %thead
             %tr
+              %th Image
               %th Command
               %th Processes
               %th Desired Processes
               %th
           %tbody
-            - @commands_process_counts.each do |command, process_count|
+            - @commands.each do |command|
               %tr
-                %td= command
-                %td= process_count
+                %td= command.image
+                %td= command.expression
+                %td= command.process_count
                 %td
-                  = text_field_tag "commands_process_counts[#{command}]", nil, class: 'form-control', style: 'width: 50px;'
+                  = text_field_tag "commands_process_counts[#{command.expression}]", nil, class: 'form-control', style: 'width: 50px;'
                 %td
-                  - if process_count == 0
-                    = link_to 'Delete', delete_commands_path(command: CGI.escape(command)), class: 'btn btn-danger', style: 'margin-left: 10px;'
+                  - if command.process_count == 0
+                    = link_to 'Delete', delete_commands_path(command: CGI.escape(command.expression)), class: 'btn btn-danger', style: 'margin-left: 10px;'
             %tr
+              %td
               %td
               %td
               %td= submit_tag 'Save', class: 'btn btn-default'

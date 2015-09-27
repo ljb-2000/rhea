@@ -17,16 +17,21 @@ module Rhea
           delete_replica_controller(command)
         end
 
-        def commands_process_counts
+        def all
           controllers = api.get_replication_controllers
-          commands_process_counts = controllers.map do |controller|
-            command = controller.spec.template.metadata.annotations.try(:rhea_command)
-            next(nil) if command.nil?
+          commands = controllers.map do |controller|
+            expression = controller.spec.template.metadata.annotations.try(:rhea_command)
+            next if expression.nil?
             process_count = controller.status.replicas
-            [command, process_count]
+            image = controller.spec.template.spec.containers.first.image.split('/').last
+            OpenStruct.new(
+              expression: expression,
+              image: image,
+              process_count: process_count
+            )
           end.compact
-          commands_process_counts = commands_process_counts.sort_by(&:first)
-          Hash[commands_process_counts]
+          commands = commands.sort_by(&:expression)
+          commands
         end
 
         private

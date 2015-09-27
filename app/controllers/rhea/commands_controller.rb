@@ -1,7 +1,13 @@
 module Rhea
   class CommandsController < Rhea::BaseController
     def index
-      @commands_process_counts = Rhea::Kubernetes::Command.commands_process_counts
+      @commands = Rhea::Kubernetes::Command.all
+      @images = @commands.map(&:image).uniq.sort
+      @default_image = Rhea.settings[:image].split('/').last
+      params[:image] ||= @default_image
+      if params[:image].present?
+        @commands = @commands.select { |command| command.image == params[:image] }
+      end
     end
 
     def delete
