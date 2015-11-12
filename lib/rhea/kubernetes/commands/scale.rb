@@ -1,68 +1,30 @@
 module Rhea
   module Kubernetes
-    class Command
-      NAMESPACE = 'default'
+    module Commands
+      class Scale < Base
+        attr_accessor :command, :process_count
 
-      class << self
-        def scale(command, process_count)
+        def initialize(command, process_count)
+          self.command = command
+          self.process_count = process_count
+        end
+
+        def perform
           key = command_to_key(command)
-          if is_replica_controller_running?(key)
-            scale_replica_controller(command, process_count)
+          if is_replication_controller_running?(key)
+            scale_replication_controller(command, process_count)
           else
-            start_replica_controller(command, process_count)
+            start_replication_controller(command, process_count)
           end
-        end
-
-        def destroy(command)
-          delete_replica_controller(command)
-        end
-
-        def all
-          controllers = api.get_replication_controllers
-          commands = controllers.map do |controller|
-            expression = controller.spec.template.metadata.annotations.try(:rhea_command)
-            next if expression.nil?
-            process_count = controller.status.replicas
-            image = controller.spec.template.spec.containers.first.image.split('/').last
-            OpenStruct.new(
-              expression: expression,
-              image: image,
-              process_count: process_count
-            )
-          end.compact
-          commands = commands.sort_by(&:expression)
-          commands
         end
 
         private
 
-        def api
-          @api ||= Rhea::Kubernetes::Api.new
-        end
-
-        def command_to_key(command)
-          image = Rhea.settings[:image]
-          command_hash = Digest::MD5.hexdigest("#{image}#{command}")[0..3]
-          command_for_host = command.downcase.gsub(/[^-a-z0-9]+/i, '-').squeeze('-')
-          key = "#{key_prefix}#{command_hash}-#{command_for_host}"
-          max_host_name_length = 64
-          key = key[0,max_host_name_length]
-          # The key can't end with a '-'
-          key.gsub!(/\-+$/, '')
-          key
-        end
-
-        def is_replica_controller_running?(key)
+        def is_replication_controller_running?(key)
           api.get_replication_controllers(label_selector: "name=#{key}").length > 0
         end
 
-        def delete_replica_controller(command)
-          # NOTE: Deleting the rc sends a kill signal that doesn't gracefully stop Resque worker processes.
-          key = command_to_key(command)
-          api.delete_replication_controller(key, NAMESPACE)
-        end
-
-        def start_replica_controller(command, process_count)
+        def start_replication_controller(command, process_count)
           key = command_to_key(command)
           parsed_command = parse_command(command)
           raw_command = parsed_command[:raw_command]
@@ -109,7 +71,7 @@ module Rhea
           api.create_replication_controller(controller)
         end
 
-        def scale_replica_controller(command, process_count)
+        def scale_replication_controller(command, process_count)
           key = command_to_key(command)
           controller = api.get_replication_controllers(label_selector: "name=#{key}").first
           controller.spec.replicas = process_count
@@ -142,10 +104,6 @@ module Rhea
               'value' => value
             }
           end
-        end
-
-        def key_prefix
-          'rhea-'
         end
       end
     end

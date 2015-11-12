@@ -2,8 +2,8 @@ require 'kubeclient'
 require 'ostruct'
 
 directory = File.dirname(File.absolute_path(__FILE__))
-Dir.glob("#{directory}/rhea/*.rb") { |file| require file }
-Dir.glob("#{directory}/rhea/kubernetes/*.rb") { |file| require file }
+require "#{directory}/rhea/kubernetes/commands/base"
+Dir.glob("#{directory}/rhea/**/*.rb") { |file| require file }
 
 module Rhea
   @settings = {

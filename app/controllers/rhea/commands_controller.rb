@@ -1,7 +1,7 @@
 module Rhea
   class CommandsController < Rhea::BaseController
     def index
-      @commands = Rhea::Kubernetes::Command.all
+      @commands = Rhea::Kubernetes::Commands::All.new.perform
       @images = @commands.map(&:image).uniq.sort
       @default_image = Rhea.settings[:image].split('/').last
       params[:image] ||= @default_image
@@ -13,7 +13,7 @@ module Rhea
     def delete
       command = params[:command]
       command = CGI.unescape(command)
-      Rhea::Kubernetes::Command.destroy(command)
+      Rhea::Kubernetes::Commands::Delete.new(command).perform
       flash[:notice] = "Command '#{command}' deleted"
       redirect_to :back
     end
@@ -25,7 +25,7 @@ module Rhea
         next if process_count.blank?
         process_count = process_count.to_i
         begin
-          Rhea::Kubernetes::Command.scale(command, process_count)
+          Rhea::Kubernetes::Commands::Scale.new(command, process_count).perform
           # Sleep briefly to prevent user needing to refresh page to see updated count
           sleep 0.2
         rescue Rhea::Kubernetes::ServerError => e
@@ -48,7 +48,7 @@ module Rhea
       command_type = Rhea::CommandType.find(command_type_key)
       command = command_type.input_to_command(command_type_input)
 
-      Rhea::Kubernetes::Command.scale(command, process_count.to_i)
+      Rhea::Kubernetes::Commands::Scale.new(command, process_count.to_i).perform
       # Sleep briefly to prevent user needing to refresh page to see updated counts
       sleep 0.1
       redirect_to params[:redirect_to], notice: 'Command created!'
