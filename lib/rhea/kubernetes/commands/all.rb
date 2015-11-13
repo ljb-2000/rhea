@@ -5,15 +5,7 @@ module Rhea
         def perform
           controllers = api.get_replication_controllers
           commands = controllers.map do |controller|
-            expression = controller.spec.template.metadata.annotations.try(:rhea_command)
-            next if expression.nil?
-            process_count = controller.status.replicas
-            image = controller.spec.template.spec.containers.first.image.split('/').last
-            OpenStruct.new(
-              expression: expression,
-              image: image,
-              process_count: process_count
-            )
+            normalize_controller(controller)
           end.compact
           commands = commands.sort_by(&:expression)
           commands

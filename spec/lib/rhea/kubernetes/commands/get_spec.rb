@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Rhea::Kubernetes::Commands::All, :vcr do
+describe Rhea::Kubernetes::Commands::Get, :vcr do
   include KubernetesSpecHelper
 
   before(:each) { delete_replication_controllers }
@@ -14,15 +14,14 @@ describe Rhea::Kubernetes::Commands::All, :vcr do
         Rhea::Kubernetes::Commands::Scale.new(command, process_count).perform
       end
 
-      it 'returns the rc' do
-        replication_controllers = Rhea::Kubernetes::Commands::All.new.perform
+      it 'gets the rc' do
+        replication_controller = Rhea::Kubernetes::Commands::Get.new(command).perform
         expected_replication_controller = OpenStruct.new(
           expression: command,
           image: kube_image.split('/').last,
           process_count: process_count
         )
-        expect(replication_controllers.length).to eq(1)
-        expect(replication_controllers[0].to_h).to include(expected_replication_controller.to_h)
+        expect(replication_controller.to_h).to include(expected_replication_controller.to_h)
       end
     end
   end

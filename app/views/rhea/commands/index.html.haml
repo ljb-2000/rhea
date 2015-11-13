@@ -1,5 +1,5 @@
 .row
-  .col-md-7
+  .col-md-8
     .pull-right
       = form_tag commands_path, method: 'GET', class: 'form-inline' do
         .form-group
@@ -10,35 +10,55 @@
     - if @commands.blank?
       %p No commands found.
     - else
-      = form_tag update_all_commands_path, method: 'POST' do
+      = form_tag batch_update_commands_path, method: 'POST' do
         = hidden_field_tag :redirect_to, request.fullpath
         %table.table.table-striped
           %thead
             %tr
+              %th
               %th Image
               %th Command
               %th Processes
               %th Desired Processes
+              %th Deployed
               %th
           %tbody
             - @commands.each do |command|
+              - escaped_command_expression = CGI.escape(command.expression)
               %tr
+                %td= check_box_tag 'batch_commands[]', escaped_command_expression, false, class: 'command-checkbox'
                 %td= command.image
                 %td= command.expression
                 %td= command.process_count
                 %td
                   = text_field_tag "commands_process_counts[#{command.expression}]", nil, class: 'form-control', style: 'width: 50px;'
                 %td
+                  = time_ago_in_words(command.created_at.in_time_zone(Time.zone), include_seconds: true)
+                  ago
+                %td{ style: 'white-space: nowrap;' }
+                  = link_to redeploy_commands_path(command: escaped_command_expression), title: 'Redeploy', class: 'btn btn-info btn-xs', style: 'margin-left: 5px;' do
+                    %span.glyphicon.glyphicon-cloud-download
                   - if command.process_count == 0
-                    = link_to 'Delete', delete_commands_path(command: CGI.escape(command.expression)), class: 'btn btn-danger', style: 'margin-left: 10px;'
+                    = link_to delete_commands_path(command: escaped_command_expression), title: 'Delete', class: 'btn btn-danger btn-xs', style: 'margin-left: 5px;' do
+                      %span.glyphicon.glyphicon-remove
+                  - else
+                    = link_to stop_commands_path(command: escaped_command_expression), title: 'Stop', class: 'btn btn-warning btn-xs', style: 'margin-left: 5px;' do
+                      %span.glyphicon.glyphicon-stop
             %tr
+              %td{ colspan: 2 }
+                .batch-actions{ style: 'display: none;' }
+                  = button_tag name: 'batch_action', value: 'redeploy', class: 'btn btn-info btn-xs' do
+                    %span.glyphicon.glyphicon-cloud-download
+                  = button_tag name: 'batch_action', value: 'stop', class: 'btn btn-warning btn-xs' do
+                    %span.glyphicon.glyphicon-stop
               %td
               %td
               %td
-              %td= submit_tag 'Save', class: 'btn btn-default'
+                = button_tag 'Save', name: 'batch_action', value: 'scale', class: 'btn btn-default'
+              %td
               %td
 
-  .col-md-5
+  .col-md-4
     .panel.panel-default
       .panel-heading
         %h4 New Command
@@ -54,7 +74,7 @@
             %tbody
               %tr
                 %td= select_tag :command_type_key, options_for_select(Rhea::CommandType.options_for_select, Rhea.settings[:default_command_type_key]), class: 'form-control', style: 'width: 90px;', required: 'required'
-                %td= text_field_tag :command_type_input, nil, class: 'form-control', style: 'width: 230px;', required: 'required'
+                %td= text_field_tag :command_type_input, nil, class: 'form-control', style: 'width: 130px;', required: 'required'
                 %td= text_field_tag :process_count, nil, class: 'form-control', style: 'width: 50px;', required: 'required'
           = submit_tag 'Create', class: 'btn btn-default'
 
@@ -63,3 +83,8 @@
         %h4 Command Types
       .panel-body
         = render partial: 'rhea/command_types/list'
+
+:javascript
+  var checkboxes = $('.command-checkbox');
+  var batchActions = $('.batch-actions');
+  checkboxes.on('click', function() { batchActions.toggle(checkboxes.filter(':checked').length > 0); return true; });

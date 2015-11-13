@@ -6,13 +6,16 @@ module Rhea
 
     helper Rhea::Helper
 
-    around_filter :rescue_connection_exceptions
+    around_filter :rescue_exceptions
 
     private
 
-    def rescue_connection_exceptions
+    def rescue_exceptions
       yield
     rescue Errno::ECONNREFUSED
+      render_connection_exception
+    rescue Rhea::Kubernetes::ServerError => e
+      flash[:alert] = e.message
       render_connection_exception
     end
 

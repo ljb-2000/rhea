@@ -21,6 +21,19 @@ module Rhea
           key.gsub!(/\-+$/, '')
           key
         end
+
+        def normalize_controller(controller)
+          expression = controller.spec.template.metadata.annotations.try(:rhea_command)
+          return if expression.nil?
+          process_count = controller.status.replicas
+          image = controller.spec.template.spec.containers.first.image.split('/').last
+          OpenStruct.new(
+            expression: expression,
+            image: image,
+            process_count: process_count,
+            created_at: controller.metadata.creationTimestamp
+          )
+        end
         
         def key_prefix
           'rhea-'
