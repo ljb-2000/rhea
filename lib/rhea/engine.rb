@@ -1,5 +1,6 @@
 require 'haml'
 require 'sass-rails'
+require 'bootstrap-sass'
 
 module Rhea
   class Engine < ::Rails::Engine

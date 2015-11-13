@@ -13,6 +13,7 @@ Gem::Specification.new do |s|
   s.license       = 'MIT'
 
   s.add_dependency 'kubeclient', '~> 0.3.0'
+  s.add_dependency 'bootstrap-sass', '~> 3.3.5'
   s.add_dependency 'coffee-rails'
   s.add_dependency 'haml'
   s.add_dependency 'sass-rails'
