@@ -82,15 +82,16 @@ module Rhea
 
     def batch_scale
       commands_process_counts = params[:commands_process_counts]
+      scaled_commands_count = 0
       commands_process_counts.each do |command, process_count|
         next if process_count.blank?
         process_count = process_count.to_i
         command = CGI.unescape(command)
-        # TODO: Don't scale unless necessary
         Rhea::Kubernetes::Commands::Scale.new(command, process_count).perform
+        scaled_commands_count += 1
       end
       wait_for_updates_to_persist
-      redirect_to params[:redirect_to], notice: "Scaled #{commands_process_counts.length} #{'command'.pluralize(commands_process_counts.length)}!"
+      redirect_to params[:redirect_to], notice: "Scaled #{scaled_commands_count} #{'command'.pluralize(scaled_commands_count)}!"
     end
 
     def batch_stop
