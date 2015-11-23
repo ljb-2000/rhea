@@ -4,6 +4,7 @@ Rhea::Engine.routes.draw do
     collection do
       get :delete
       get :redeploy
+      get :reschedule
       get :stop
       post :batch_update
     end
@@ -11,7 +12,7 @@ Rhea::Engine.routes.draw do
   resources :events, only: [:index]
   resources :hosts, only: [:index]
   resources :services, only: [:index]
-  
+
   namespace 'api' do
     get '/jobs', to: 'jobs#index'
   end

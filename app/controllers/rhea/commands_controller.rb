@@ -31,6 +31,8 @@ module Rhea
       case params[:batch_action]
       when 'redeploy'
         batch_redeploy
+      when 'reschedule'
+        batch_reschedule
       when 'scale'
         batch_scale
       when 'stop'
@@ -56,6 +58,14 @@ module Rhea
       redirect_to :back
     end
 
+    def reschedule
+      command = params[:command]
+      command = CGI.unescape(command)
+      Rhea::Kubernetes::Commands::Reschedule.new(command).perform
+      flash[:notice] = "Command '#{command}' rescheduled!"
+      redirect_to :back
+    end
+
     def stop
       command = params[:command]
       command = CGI.unescape(command)
@@ -78,6 +88,20 @@ module Rhea
       threads.map(&:join)
       wait_for_updates_to_persist
       redirect_to params[:redirect_to], notice: "Redeployed #{commands.length} #{'command'.pluralize(commands.length)}!"
+    end
+
+    def batch_reschedule
+      commands = params[:batch_commands]
+      redirect_to params[:redirect_to], notice: 'No commands were selected!' and return if commands.blank?
+      threads = commands.map do |command|
+        command = CGI.unescape(command)
+        Thread.new do
+          Rhea::Kubernetes::Commands::Reschedule.new(command).perform
+        end
+      end
+      threads.map(&:join)
+      wait_for_updates_to_persist
+      redirect_to params[:redirect_to], notice: "Rescheduleed #{commands.length} #{'command'.pluralize(commands.length)}!"
     end
 
     def batch_scale

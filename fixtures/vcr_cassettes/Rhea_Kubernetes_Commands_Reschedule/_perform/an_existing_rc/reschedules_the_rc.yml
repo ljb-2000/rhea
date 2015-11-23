@@ -1,0 +1,421 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://vagrant:vagrant@kube.local/api/v1/replicationcontrollers
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*; q=0.5, application/xml"
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 23 Nov 2015 16:30:57 GMT
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: '{"kind":"ReplicationControllerList","apiVersion":"v1","metadata":{"selfLink":"/api/v1/replicationcontrollers","resourceVersion":"283"},"items":[{"metadata":{"name":"kube-dns-v8","namespace":"kube-system","selfLink":"/api/v1/namespaces/kube-system/replicationcontrollers/kube-dns-v8","uid":"8bc02097-91fd-11e5-8ad9-0800279dd272","resourceVersion":"65","generation":1,"creationTimestamp":"2015-11-23T16:16:26Z","labels":{"k8s-app":"kube-dns","kubernetes.io/cluster-service":"true","version":"v8"}},"spec":{"replicas":1,"selector":{"k8s-app":"kube-dns","version":"v8"},"template":{"metadata":{"creationTimestamp":null,"labels":{"k8s-app":"kube-dns","kubernetes.io/cluster-service":"true","version":"v8"}},"spec":{"volumes":[{"name":"etcd-storage","emptyDir":{}}],"containers":[{"name":"etcd","image":"gcr.io/google_containers/etcd:2.0.9","command":["/usr/local/bin/etcd","-data-dir","/var/etcd/data","-listen-client-urls","http://127.0.0.1:2379,http://127.0.0.1:4001","-advertise-client-urls","http://127.0.0.1:2379,http://127.0.0.1:4001","-initial-cluster-token","skydns-etcd"],"resources":{"limits":{"cpu":"100m","memory":"50Mi"},"requests":{"cpu":"100m","memory":"50Mi"}},"volumeMounts":[{"name":"etcd-storage","mountPath":"/var/etcd/data"}],"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"IfNotPresent"},{"name":"kube2sky","image":"gcr.io/google_containers/kube2sky:1.11","args":["-domain=cluster.local"],"resources":{"limits":{"cpu":"100m","memory":"50Mi"},"requests":{"cpu":"100m","memory":"50Mi"}},"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"IfNotPresent"},{"name":"skydns","image":"gcr.io/google_containers/skydns:2015-03-11-001","args":["-machines=http://localhost:4001","-addr=0.0.0.0:53","-domain=cluster.local."],"ports":[{"name":"dns","containerPort":53,"protocol":"UDP"},{"name":"dns-tcp","containerPort":53,"protocol":"TCP"}],"resources":{"limits":{"cpu":"100m","memory":"50Mi"},"requests":{"cpu":"100m","memory":"50Mi"}},"livenessProbe":{"httpGet":{"path":"/healthz","port":8080,"scheme":"HTTP"},"initialDelaySeconds":30,"timeoutSeconds":5},"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"IfNotPresent"},{"name":"healthz","image":"gcr.io/google_containers/exechealthz:1.0","args":["-cmd=nslookup
+        kubernetes.default.svc.cluster.local localhost \u003e/dev/null","-port=8080"],"ports":[{"containerPort":8080,"protocol":"TCP"}],"resources":{"limits":{"cpu":"10m","memory":"20Mi"},"requests":{"cpu":"10m","memory":"20Mi"}},"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"IfNotPresent"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"Default"}}},"status":{"replicas":1,"observedGeneration":1}},{"metadata":{"name":"kube-ui-v1","namespace":"kube-system","selfLink":"/api/v1/namespaces/kube-system/replicationcontrollers/kube-ui-v1","uid":"8baf3f15-91fd-11e5-8ad9-0800279dd272","resourceVersion":"59","generation":1,"creationTimestamp":"2015-11-23T16:16:26Z","labels":{"k8s-app":"kube-ui","kubernetes.io/cluster-service":"true","version":"v1"}},"spec":{"replicas":1,"selector":{"k8s-app":"kube-ui","version":"v1"},"template":{"metadata":{"creationTimestamp":null,"labels":{"k8s-app":"kube-ui","kubernetes.io/cluster-service":"true","version":"v1"}},"spec":{"containers":[{"name":"kube-ui","image":"gcr.io/google_containers/kube-ui:v1.1","ports":[{"containerPort":8080,"protocol":"TCP"}],"resources":{"limits":{"cpu":"100m","memory":"50Mi"},"requests":{"cpu":"100m","memory":"50Mi"}},"livenessProbe":{"httpGet":{"path":"/","port":8080,"scheme":"HTTP"},"initialDelaySeconds":30,"timeoutSeconds":5},"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"IfNotPresent"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst"}}},"status":{"replicas":1,"observedGeneration":1}},{"metadata":{"name":"monitoring-heapster-v8","namespace":"kube-system","selfLink":"/api/v1/namespaces/kube-system/replicationcontrollers/monitoring-heapster-v8","uid":"8ba6ecc0-91fd-11e5-8ad9-0800279dd272","resourceVersion":"53","generation":1,"creationTimestamp":"2015-11-23T16:16:26Z","labels":{"k8s-app":"heapster","kubernetes.io/cluster-service":"true","version":"v8"}},"spec":{"replicas":1,"selector":{"k8s-app":"heapster","version":"v8"},"template":{"metadata":{"creationTimestamp":null,"labels":{"k8s-app":"heapster","kubernetes.io/cluster-service":"true","version":"v8"}},"spec":{"containers":[{"name":"heapster","image":"gcr.io/google_containers/heapster:v0.17.0","command":["/heapster","--source=kubernetes:''''","--sink=influxdb:http://monitoring-influxdb:8086"],"resources":{"limits":{"cpu":"100m","memory":"300Mi"},"requests":{"cpu":"100m","memory":"300Mi"}},"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"IfNotPresent"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst"}}},"status":{"replicas":1,"observedGeneration":1}},{"metadata":{"name":"monitoring-influx-grafana-v1","namespace":"kube-system","selfLink":"/api/v1/namespaces/kube-system/replicationcontrollers/monitoring-influx-grafana-v1","uid":"8bae43b2-91fd-11e5-8ad9-0800279dd272","resourceVersion":"63","generation":1,"creationTimestamp":"2015-11-23T16:16:26Z","labels":{"k8s-app":"influxGrafana","kubernetes.io/cluster-service":"true","version":"v1"}},"spec":{"replicas":1,"selector":{"k8s-app":"influxGrafana","version":"v1"},"template":{"metadata":{"creationTimestamp":null,"labels":{"k8s-app":"influxGrafana","kubernetes.io/cluster-service":"true","version":"v1"}},"spec":{"volumes":[{"name":"influxdb-persistent-storage","emptyDir":{}}],"containers":[{"name":"influxdb","image":"gcr.io/google_containers/heapster_influxdb:v0.3","ports":[{"hostPort":8083,"containerPort":8083,"protocol":"TCP"},{"hostPort":8086,"containerPort":8086,"protocol":"TCP"}],"resources":{"limits":{"cpu":"100m","memory":"200Mi"},"requests":{"cpu":"100m","memory":"200Mi"}},"volumeMounts":[{"name":"influxdb-persistent-storage","mountPath":"/data"}],"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"IfNotPresent"},{"name":"grafana","image":"gcr.io/google_containers/heapster_grafana:v0.7","env":[{"name":"INFLUXDB_EXTERNAL_URL","value":"/api/v1/proxy/namespaces/kube-system/services/monitoring-influxdb:api/db/"},{"name":"INFLUXDB_HOST","value":"monitoring-influxdb"},{"name":"INFLUXDB_PORT","value":"8086"}],"resources":{"limits":{"cpu":"100m","memory":"100Mi"},"requests":{"cpu":"100m","memory":"100Mi"}},"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"IfNotPresent"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst"}}},"status":{"replicas":1,"observedGeneration":1}}]}'
+    http_version: 
+  recorded_at: Mon, 23 Nov 2015 16:30:58 GMT
+- request:
+    method: get
+    uri: https://vagrant:vagrant@kube.local/api/v1/replicationcontrollers?labelSelector=name=rhea-7370-foo-bar
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*; q=0.5, application/xml"
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 23 Nov 2015 16:31:02 GMT
+      Content-Length:
+      - '146'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"ReplicationControllerList","apiVersion":"v1","metadata":{"selfLink":"/api/v1/replicationcontrollers","resourceVersion":"284"},"items":[]}'
+    http_version: 
+  recorded_at: Mon, 23 Nov 2015 16:31:03 GMT
+- request:
+    method: post
+    uri: https://vagrant:vagrant@kube.local/api/v1/namespaces/default/replicationcontrollers
+    body:
+      encoding: UTF-8
+      string: '{"metadata":{"name":"rhea-7370-foo-bar","namespace":"default","labels":{"name":"rhea-7370-foo-bar"},"annotations":{"rhea_command":"foo
+        -bar"}},"spec":{"replicas":2,"selector":{"name":"rhea-7370-foo-bar"},"template":{"metadata":{"labels":{"name":"rhea-7370-foo-bar"},"annotations":{"rhea_command":"foo
+        -bar"}},"spec":{"containers":[{"name":"rhea-7370-foo-bar","image":"docker.local/myimage:latest","env":[{"name":"MY_ENV_VAR_NAME","value":"my_env_var_value"}],"command":["foo","-bar"]}]}}},"kind":"ReplicationController","apiVersion":"v1"}'
+    headers:
+      Accept:
+      - "*/*; q=0.5, application/xml"
+      Accept-Encoding:
+      - gzip, deflate
+      Content-Length:
+      - '538'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 23 Nov 2015 16:31:07 GMT
+      Content-Length:
+      - '972'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"ReplicationController","apiVersion":"v1","metadata":{"name":"rhea-7370-foo-bar","namespace":"default","selfLink":"/api/v1/namespaces/default/replicationcontrollers/rhea-7370-foo-bar","uid":"990fbbb8-91ff-11e5-8ad9-0800279dd272","resourceVersion":"286","generation":1,"creationTimestamp":"2015-11-23T16:31:07Z","labels":{"name":"rhea-7370-foo-bar"},"annotations":{"rhea_command":"foo
+        -bar"}},"spec":{"replicas":2,"selector":{"name":"rhea-7370-foo-bar"},"template":{"metadata":{"creationTimestamp":null,"labels":{"name":"rhea-7370-foo-bar"},"annotations":{"rhea_command":"foo
+        -bar"}},"spec":{"containers":[{"name":"rhea-7370-foo-bar","image":"docker.local/myimage:latest","command":["foo","-bar"],"env":[{"name":"MY_ENV_VAR_NAME","value":"my_env_var_value"}],"resources":{},"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst"}}},"status":{"replicas":0}}'
+    http_version: 
+  recorded_at: Mon, 23 Nov 2015 16:31:08 GMT
+- request:
+    method: get
+    uri: https://vagrant:vagrant@kube.local/api/v1/replicationcontrollers?labelSelector=name=rhea-7370-foo-bar
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*; q=0.5, application/xml"
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 23 Nov 2015 16:31:12 GMT
+      Content-Length:
+      - '1092'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"ReplicationControllerList","apiVersion":"v1","metadata":{"selfLink":"/api/v1/replicationcontrollers","resourceVersion":"311"},"items":[{"metadata":{"name":"rhea-7370-foo-bar","namespace":"default","selfLink":"/api/v1/namespaces/default/replicationcontrollers/rhea-7370-foo-bar","uid":"990fbbb8-91ff-11e5-8ad9-0800279dd272","resourceVersion":"293","generation":1,"creationTimestamp":"2015-11-23T16:31:07Z","labels":{"name":"rhea-7370-foo-bar"},"annotations":{"rhea_command":"foo
+        -bar"}},"spec":{"replicas":2,"selector":{"name":"rhea-7370-foo-bar"},"template":{"metadata":{"creationTimestamp":null,"labels":{"name":"rhea-7370-foo-bar"},"annotations":{"rhea_command":"foo
+        -bar"}},"spec":{"containers":[{"name":"rhea-7370-foo-bar","image":"docker.local/myimage:latest","command":["foo","-bar"],"env":[{"name":"MY_ENV_VAR_NAME","value":"my_env_var_value"}],"resources":{},"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst"}}},"status":{"replicas":2,"observedGeneration":1}}]}'
+    http_version: 
+  recorded_at: Mon, 23 Nov 2015 16:31:13 GMT
+- request:
+    method: get
+    uri: https://vagrant:vagrant@kube.local/api/v1/replicationcontrollers?labelSelector=name=rhea-7370-foo-bar
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*; q=0.5, application/xml"
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 23 Nov 2015 16:31:17 GMT
+      Content-Length:
+      - '1092'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"ReplicationControllerList","apiVersion":"v1","metadata":{"selfLink":"/api/v1/replicationcontrollers","resourceVersion":"314"},"items":[{"metadata":{"name":"rhea-7370-foo-bar","namespace":"default","selfLink":"/api/v1/namespaces/default/replicationcontrollers/rhea-7370-foo-bar","uid":"990fbbb8-91ff-11e5-8ad9-0800279dd272","resourceVersion":"293","generation":1,"creationTimestamp":"2015-11-23T16:31:07Z","labels":{"name":"rhea-7370-foo-bar"},"annotations":{"rhea_command":"foo
+        -bar"}},"spec":{"replicas":2,"selector":{"name":"rhea-7370-foo-bar"},"template":{"metadata":{"creationTimestamp":null,"labels":{"name":"rhea-7370-foo-bar"},"annotations":{"rhea_command":"foo
+        -bar"}},"spec":{"containers":[{"name":"rhea-7370-foo-bar","image":"docker.local/myimage:latest","command":["foo","-bar"],"env":[{"name":"MY_ENV_VAR_NAME","value":"my_env_var_value"}],"resources":{},"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst"}}},"status":{"replicas":2,"observedGeneration":1}}]}'
+    http_version: 
+  recorded_at: Mon, 23 Nov 2015 16:31:19 GMT
+- request:
+    method: get
+    uri: https://vagrant:vagrant@kube.local/api/v1/replicationcontrollers?labelSelector=name=rhea-7370-foo-bar
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*; q=0.5, application/xml"
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 23 Nov 2015 16:31:23 GMT
+      Content-Length:
+      - '1092'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"ReplicationControllerList","apiVersion":"v1","metadata":{"selfLink":"/api/v1/replicationcontrollers","resourceVersion":"319"},"items":[{"metadata":{"name":"rhea-7370-foo-bar","namespace":"default","selfLink":"/api/v1/namespaces/default/replicationcontrollers/rhea-7370-foo-bar","uid":"990fbbb8-91ff-11e5-8ad9-0800279dd272","resourceVersion":"293","generation":1,"creationTimestamp":"2015-11-23T16:31:07Z","labels":{"name":"rhea-7370-foo-bar"},"annotations":{"rhea_command":"foo
+        -bar"}},"spec":{"replicas":2,"selector":{"name":"rhea-7370-foo-bar"},"template":{"metadata":{"creationTimestamp":null,"labels":{"name":"rhea-7370-foo-bar"},"annotations":{"rhea_command":"foo
+        -bar"}},"spec":{"containers":[{"name":"rhea-7370-foo-bar","image":"docker.local/myimage:latest","command":["foo","-bar"],"env":[{"name":"MY_ENV_VAR_NAME","value":"my_env_var_value"}],"resources":{},"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst"}}},"status":{"replicas":2,"observedGeneration":1}}]}'
+    http_version: 
+  recorded_at: Mon, 23 Nov 2015 16:31:24 GMT
+- request:
+    method: put
+    uri: https://vagrant:vagrant@kube.local/api/v1/namespaces/default/replicationcontrollers/rhea-7370-foo-bar
+    body:
+      encoding: UTF-8
+      string: '{"metadata":{"name":"rhea-7370-foo-bar","namespace":"default","selfLink":"/api/v1/namespaces/default/replicationcontrollers/rhea-7370-foo-bar","uid":"990fbbb8-91ff-11e5-8ad9-0800279dd272","resourceVersion":"293","generation":1,"creationTimestamp":"2015-11-23T16:31:07Z","labels":{"name":"rhea-7370-foo-bar"},"annotations":{"rhea_command":"foo
+        -bar"}},"spec":{"replicas":0,"selector":{"name":"rhea-7370-foo-bar"},"template":{"metadata":{"creationTimestamp":null,"labels":{"name":"rhea-7370-foo-bar"},"annotations":{"rhea_command":"foo
+        -bar"}},"spec":{"containers":[{"name":"rhea-7370-foo-bar","image":"docker.local/myimage:latest","command":["foo","-bar"],"env":[{"name":"MY_ENV_VAR_NAME","value":"my_env_var_value"}],"resources":{},"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst"}}},"status":{"replicas":2,"observedGeneration":1}}'
+    headers:
+      Accept:
+      - "*/*; q=0.5, application/xml"
+      Accept-Encoding:
+      - gzip, deflate
+      Content-Length:
+      - '946'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 23 Nov 2015 16:31:28 GMT
+      Content-Length:
+      - '995'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"ReplicationController","apiVersion":"v1","metadata":{"name":"rhea-7370-foo-bar","namespace":"default","selfLink":"/api/v1/namespaces/default/replicationcontrollers/rhea-7370-foo-bar","uid":"990fbbb8-91ff-11e5-8ad9-0800279dd272","resourceVersion":"320","generation":2,"creationTimestamp":"2015-11-23T16:31:07Z","labels":{"name":"rhea-7370-foo-bar"},"annotations":{"rhea_command":"foo
+        -bar"}},"spec":{"replicas":0,"selector":{"name":"rhea-7370-foo-bar"},"template":{"metadata":{"creationTimestamp":null,"labels":{"name":"rhea-7370-foo-bar"},"annotations":{"rhea_command":"foo
+        -bar"}},"spec":{"containers":[{"name":"rhea-7370-foo-bar","image":"docker.local/myimage:latest","command":["foo","-bar"],"env":[{"name":"MY_ENV_VAR_NAME","value":"my_env_var_value"}],"resources":{},"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst"}}},"status":{"replicas":2,"observedGeneration":1}}'
+    http_version: 
+  recorded_at: Mon, 23 Nov 2015 16:31:29 GMT
+- request:
+    method: get
+    uri: https://vagrant:vagrant@kube.local/api/v1/replicationcontrollers?labelSelector=name=rhea-7370-foo-bar
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*; q=0.5, application/xml"
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 23 Nov 2015 16:31:33 GMT
+      Content-Length:
+      - '1092'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"ReplicationControllerList","apiVersion":"v1","metadata":{"selfLink":"/api/v1/replicationcontrollers","resourceVersion":"332"},"items":[{"metadata":{"name":"rhea-7370-foo-bar","namespace":"default","selfLink":"/api/v1/namespaces/default/replicationcontrollers/rhea-7370-foo-bar","uid":"990fbbb8-91ff-11e5-8ad9-0800279dd272","resourceVersion":"327","generation":2,"creationTimestamp":"2015-11-23T16:31:07Z","labels":{"name":"rhea-7370-foo-bar"},"annotations":{"rhea_command":"foo
+        -bar"}},"spec":{"replicas":0,"selector":{"name":"rhea-7370-foo-bar"},"template":{"metadata":{"creationTimestamp":null,"labels":{"name":"rhea-7370-foo-bar"},"annotations":{"rhea_command":"foo
+        -bar"}},"spec":{"containers":[{"name":"rhea-7370-foo-bar","image":"docker.local/myimage:latest","command":["foo","-bar"],"env":[{"name":"MY_ENV_VAR_NAME","value":"my_env_var_value"}],"resources":{},"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst"}}},"status":{"replicas":0,"observedGeneration":2}}]}'
+    http_version: 
+  recorded_at: Mon, 23 Nov 2015 16:31:34 GMT
+- request:
+    method: get
+    uri: https://vagrant:vagrant@kube.local/api/v1/replicationcontrollers?labelSelector=name=rhea-7370-foo-bar
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*; q=0.5, application/xml"
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 23 Nov 2015 16:31:38 GMT
+      Content-Length:
+      - '1092'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"ReplicationControllerList","apiVersion":"v1","metadata":{"selfLink":"/api/v1/replicationcontrollers","resourceVersion":"332"},"items":[{"metadata":{"name":"rhea-7370-foo-bar","namespace":"default","selfLink":"/api/v1/namespaces/default/replicationcontrollers/rhea-7370-foo-bar","uid":"990fbbb8-91ff-11e5-8ad9-0800279dd272","resourceVersion":"327","generation":2,"creationTimestamp":"2015-11-23T16:31:07Z","labels":{"name":"rhea-7370-foo-bar"},"annotations":{"rhea_command":"foo
+        -bar"}},"spec":{"replicas":0,"selector":{"name":"rhea-7370-foo-bar"},"template":{"metadata":{"creationTimestamp":null,"labels":{"name":"rhea-7370-foo-bar"},"annotations":{"rhea_command":"foo
+        -bar"}},"spec":{"containers":[{"name":"rhea-7370-foo-bar","image":"docker.local/myimage:latest","command":["foo","-bar"],"env":[{"name":"MY_ENV_VAR_NAME","value":"my_env_var_value"}],"resources":{},"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst"}}},"status":{"replicas":0,"observedGeneration":2}}]}'
+    http_version: 
+  recorded_at: Mon, 23 Nov 2015 16:31:39 GMT
+- request:
+    method: put
+    uri: https://vagrant:vagrant@kube.local/api/v1/namespaces/default/replicationcontrollers/rhea-7370-foo-bar
+    body:
+      encoding: UTF-8
+      string: '{"metadata":{"name":"rhea-7370-foo-bar","namespace":"default","selfLink":"/api/v1/namespaces/default/replicationcontrollers/rhea-7370-foo-bar","uid":"990fbbb8-91ff-11e5-8ad9-0800279dd272","resourceVersion":"327","generation":2,"creationTimestamp":"2015-11-23T16:31:07Z","labels":{"name":"rhea-7370-foo-bar"},"annotations":{"rhea_command":"foo
+        -bar"}},"spec":{"replicas":2,"selector":{"name":"rhea-7370-foo-bar"},"template":{"metadata":{"creationTimestamp":null,"labels":{"name":"rhea-7370-foo-bar"},"annotations":{"rhea_command":"foo
+        -bar"}},"spec":{"containers":[{"name":"rhea-7370-foo-bar","image":"docker.local/myimage:latest","command":["foo","-bar"],"env":[{"name":"MY_ENV_VAR_NAME","value":"my_env_var_value"}],"resources":{},"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst"}}},"status":{"replicas":0,"observedGeneration":2}}'
+    headers:
+      Accept:
+      - "*/*; q=0.5, application/xml"
+      Accept-Encoding:
+      - gzip, deflate
+      Content-Length:
+      - '946'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 23 Nov 2015 16:31:43 GMT
+      Content-Length:
+      - '995'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"ReplicationController","apiVersion":"v1","metadata":{"name":"rhea-7370-foo-bar","namespace":"default","selfLink":"/api/v1/namespaces/default/replicationcontrollers/rhea-7370-foo-bar","uid":"990fbbb8-91ff-11e5-8ad9-0800279dd272","resourceVersion":"334","generation":3,"creationTimestamp":"2015-11-23T16:31:07Z","labels":{"name":"rhea-7370-foo-bar"},"annotations":{"rhea_command":"foo
+        -bar"}},"spec":{"replicas":2,"selector":{"name":"rhea-7370-foo-bar"},"template":{"metadata":{"creationTimestamp":null,"labels":{"name":"rhea-7370-foo-bar"},"annotations":{"rhea_command":"foo
+        -bar"}},"spec":{"containers":[{"name":"rhea-7370-foo-bar","image":"docker.local/myimage:latest","command":["foo","-bar"],"env":[{"name":"MY_ENV_VAR_NAME","value":"my_env_var_value"}],"resources":{},"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst"}}},"status":{"replicas":0,"observedGeneration":2}}'
+    http_version: 
+  recorded_at: Mon, 23 Nov 2015 16:31:44 GMT
+- request:
+    method: get
+    uri: https://vagrant:vagrant@kube.local/api/v1/replicationcontrollers?labelSelector=name=rhea-7370-foo-bar
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*; q=0.5, application/xml"
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 23 Nov 2015 16:31:48 GMT
+      Content-Length:
+      - '1092'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"ReplicationControllerList","apiVersion":"v1","metadata":{"selfLink":"/api/v1/replicationcontrollers","resourceVersion":"358"},"items":[{"metadata":{"name":"rhea-7370-foo-bar","namespace":"default","selfLink":"/api/v1/namespaces/default/replicationcontrollers/rhea-7370-foo-bar","uid":"990fbbb8-91ff-11e5-8ad9-0800279dd272","resourceVersion":"343","generation":3,"creationTimestamp":"2015-11-23T16:31:07Z","labels":{"name":"rhea-7370-foo-bar"},"annotations":{"rhea_command":"foo
+        -bar"}},"spec":{"replicas":2,"selector":{"name":"rhea-7370-foo-bar"},"template":{"metadata":{"creationTimestamp":null,"labels":{"name":"rhea-7370-foo-bar"},"annotations":{"rhea_command":"foo
+        -bar"}},"spec":{"containers":[{"name":"rhea-7370-foo-bar","image":"docker.local/myimage:latest","command":["foo","-bar"],"env":[{"name":"MY_ENV_VAR_NAME","value":"my_env_var_value"}],"resources":{},"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst"}}},"status":{"replicas":2,"observedGeneration":3}}]}'
+    http_version: 
+  recorded_at: Mon, 23 Nov 2015 16:31:49 GMT
+- request:
+    method: get
+    uri: https://vagrant:vagrant@kube.local/api/v1/replicationcontrollers
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*; q=0.5, application/xml"
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 23 Nov 2015 16:31:53 GMT
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: '{"kind":"ReplicationControllerList","apiVersion":"v1","metadata":{"selfLink":"/api/v1/replicationcontrollers","resourceVersion":"360"},"items":[{"metadata":{"name":"rhea-7370-foo-bar","namespace":"default","selfLink":"/api/v1/namespaces/default/replicationcontrollers/rhea-7370-foo-bar","uid":"990fbbb8-91ff-11e5-8ad9-0800279dd272","resourceVersion":"343","generation":3,"creationTimestamp":"2015-11-23T16:31:07Z","labels":{"name":"rhea-7370-foo-bar"},"annotations":{"rhea_command":"foo
+        -bar"}},"spec":{"replicas":2,"selector":{"name":"rhea-7370-foo-bar"},"template":{"metadata":{"creationTimestamp":null,"labels":{"name":"rhea-7370-foo-bar"},"annotations":{"rhea_command":"foo
+        -bar"}},"spec":{"containers":[{"name":"rhea-7370-foo-bar","image":"docker.local/myimage:latest","command":["foo","-bar"],"env":[{"name":"MY_ENV_VAR_NAME","value":"my_env_var_value"}],"resources":{},"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst"}}},"status":{"replicas":2,"observedGeneration":3}},{"metadata":{"name":"kube-dns-v8","namespace":"kube-system","selfLink":"/api/v1/namespaces/kube-system/replicationcontrollers/kube-dns-v8","uid":"8bc02097-91fd-11e5-8ad9-0800279dd272","resourceVersion":"65","generation":1,"creationTimestamp":"2015-11-23T16:16:26Z","labels":{"k8s-app":"kube-dns","kubernetes.io/cluster-service":"true","version":"v8"}},"spec":{"replicas":1,"selector":{"k8s-app":"kube-dns","version":"v8"},"template":{"metadata":{"creationTimestamp":null,"labels":{"k8s-app":"kube-dns","kubernetes.io/cluster-service":"true","version":"v8"}},"spec":{"volumes":[{"name":"etcd-storage","emptyDir":{}}],"containers":[{"name":"etcd","image":"gcr.io/google_containers/etcd:2.0.9","command":["/usr/local/bin/etcd","-data-dir","/var/etcd/data","-listen-client-urls","http://127.0.0.1:2379,http://127.0.0.1:4001","-advertise-client-urls","http://127.0.0.1:2379,http://127.0.0.1:4001","-initial-cluster-token","skydns-etcd"],"resources":{"limits":{"cpu":"100m","memory":"50Mi"},"requests":{"cpu":"100m","memory":"50Mi"}},"volumeMounts":[{"name":"etcd-storage","mountPath":"/var/etcd/data"}],"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"IfNotPresent"},{"name":"kube2sky","image":"gcr.io/google_containers/kube2sky:1.11","args":["-domain=cluster.local"],"resources":{"limits":{"cpu":"100m","memory":"50Mi"},"requests":{"cpu":"100m","memory":"50Mi"}},"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"IfNotPresent"},{"name":"skydns","image":"gcr.io/google_containers/skydns:2015-03-11-001","args":["-machines=http://localhost:4001","-addr=0.0.0.0:53","-domain=cluster.local."],"ports":[{"name":"dns","containerPort":53,"protocol":"UDP"},{"name":"dns-tcp","containerPort":53,"protocol":"TCP"}],"resources":{"limits":{"cpu":"100m","memory":"50Mi"},"requests":{"cpu":"100m","memory":"50Mi"}},"livenessProbe":{"httpGet":{"path":"/healthz","port":8080,"scheme":"HTTP"},"initialDelaySeconds":30,"timeoutSeconds":5},"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"IfNotPresent"},{"name":"healthz","image":"gcr.io/google_containers/exechealthz:1.0","args":["-cmd=nslookup
+        kubernetes.default.svc.cluster.local localhost \u003e/dev/null","-port=8080"],"ports":[{"containerPort":8080,"protocol":"TCP"}],"resources":{"limits":{"cpu":"10m","memory":"20Mi"},"requests":{"cpu":"10m","memory":"20Mi"}},"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"IfNotPresent"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"Default"}}},"status":{"replicas":1,"observedGeneration":1}},{"metadata":{"name":"kube-ui-v1","namespace":"kube-system","selfLink":"/api/v1/namespaces/kube-system/replicationcontrollers/kube-ui-v1","uid":"8baf3f15-91fd-11e5-8ad9-0800279dd272","resourceVersion":"59","generation":1,"creationTimestamp":"2015-11-23T16:16:26Z","labels":{"k8s-app":"kube-ui","kubernetes.io/cluster-service":"true","version":"v1"}},"spec":{"replicas":1,"selector":{"k8s-app":"kube-ui","version":"v1"},"template":{"metadata":{"creationTimestamp":null,"labels":{"k8s-app":"kube-ui","kubernetes.io/cluster-service":"true","version":"v1"}},"spec":{"containers":[{"name":"kube-ui","image":"gcr.io/google_containers/kube-ui:v1.1","ports":[{"containerPort":8080,"protocol":"TCP"}],"resources":{"limits":{"cpu":"100m","memory":"50Mi"},"requests":{"cpu":"100m","memory":"50Mi"}},"livenessProbe":{"httpGet":{"path":"/","port":8080,"scheme":"HTTP"},"initialDelaySeconds":30,"timeoutSeconds":5},"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"IfNotPresent"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst"}}},"status":{"replicas":1,"observedGeneration":1}},{"metadata":{"name":"monitoring-heapster-v8","namespace":"kube-system","selfLink":"/api/v1/namespaces/kube-system/replicationcontrollers/monitoring-heapster-v8","uid":"8ba6ecc0-91fd-11e5-8ad9-0800279dd272","resourceVersion":"53","generation":1,"creationTimestamp":"2015-11-23T16:16:26Z","labels":{"k8s-app":"heapster","kubernetes.io/cluster-service":"true","version":"v8"}},"spec":{"replicas":1,"selector":{"k8s-app":"heapster","version":"v8"},"template":{"metadata":{"creationTimestamp":null,"labels":{"k8s-app":"heapster","kubernetes.io/cluster-service":"true","version":"v8"}},"spec":{"containers":[{"name":"heapster","image":"gcr.io/google_containers/heapster:v0.17.0","command":["/heapster","--source=kubernetes:''''","--sink=influxdb:http://monitoring-influxdb:8086"],"resources":{"limits":{"cpu":"100m","memory":"300Mi"},"requests":{"cpu":"100m","memory":"300Mi"}},"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"IfNotPresent"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst"}}},"status":{"replicas":1,"observedGeneration":1}},{"metadata":{"name":"monitoring-influx-grafana-v1","namespace":"kube-system","selfLink":"/api/v1/namespaces/kube-system/replicationcontrollers/monitoring-influx-grafana-v1","uid":"8bae43b2-91fd-11e5-8ad9-0800279dd272","resourceVersion":"63","generation":1,"creationTimestamp":"2015-11-23T16:16:26Z","labels":{"k8s-app":"influxGrafana","kubernetes.io/cluster-service":"true","version":"v1"}},"spec":{"replicas":1,"selector":{"k8s-app":"influxGrafana","version":"v1"},"template":{"metadata":{"creationTimestamp":null,"labels":{"k8s-app":"influxGrafana","kubernetes.io/cluster-service":"true","version":"v1"}},"spec":{"volumes":[{"name":"influxdb-persistent-storage","emptyDir":{}}],"containers":[{"name":"influxdb","image":"gcr.io/google_containers/heapster_influxdb:v0.3","ports":[{"hostPort":8083,"containerPort":8083,"protocol":"TCP"},{"hostPort":8086,"containerPort":8086,"protocol":"TCP"}],"resources":{"limits":{"cpu":"100m","memory":"200Mi"},"requests":{"cpu":"100m","memory":"200Mi"}},"volumeMounts":[{"name":"influxdb-persistent-storage","mountPath":"/data"}],"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"IfNotPresent"},{"name":"grafana","image":"gcr.io/google_containers/heapster_grafana:v0.7","env":[{"name":"INFLUXDB_EXTERNAL_URL","value":"/api/v1/proxy/namespaces/kube-system/services/monitoring-influxdb:api/db/"},{"name":"INFLUXDB_HOST","value":"monitoring-influxdb"},{"name":"INFLUXDB_PORT","value":"8086"}],"resources":{"limits":{"cpu":"100m","memory":"100Mi"},"requests":{"cpu":"100m","memory":"100Mi"}},"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"IfNotPresent"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst"}}},"status":{"replicas":1,"observedGeneration":1}}]}'
+    http_version: 
+  recorded_at: Mon, 23 Nov 2015 16:31:54 GMT
+- request:
+    method: delete
+    uri: https://vagrant:vagrant@kube.local/api/v1/namespaces/default/replicationcontrollers/rhea-7370-foo-bar
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*; q=0.5, application/xml"
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 23 Nov 2015 16:31:58 GMT
+      Content-Length:
+      - '100'
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "kind": "Status",
+          "apiVersion": "v1",
+          "metadata": {},
+          "status": "Success",
+          "code": 200
+        }
+    http_version: 
+  recorded_at: Mon, 23 Nov 2015 16:32:00 GMT
+recorded_with: VCR 2.9.3
