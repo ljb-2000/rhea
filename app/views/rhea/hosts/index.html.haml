@@ -14,7 +14,7 @@
             = time_ago_in_words(started_at)
             ago
         %td
-          %table.table.table-striped.table-bordered
+          %table.table.table-condensed.table-striped.table-bordered
             %tbody
               - host[:commands_phases].each do |command, phases|
                 %tr

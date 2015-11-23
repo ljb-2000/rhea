@@ -12,7 +12,7 @@
     - else
       = form_tag batch_update_commands_path, method: 'POST' do
         = hidden_field_tag :redirect_to, request.fullpath
-        %table.table.table-striped
+        %table.table.table-condensed.table-striped
           %thead
             %tr
               %th
