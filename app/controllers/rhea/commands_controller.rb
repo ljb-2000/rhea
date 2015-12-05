@@ -2,8 +2,8 @@ module Rhea
   class CommandsController < Rhea::BaseController
     def index
       @commands = Rhea::Kubernetes::Commands::All.new.perform
-      @images = @commands.map(&:image).uniq.sort
       @default_image = Rhea.settings[:image].split('/').last
+      @images = (@commands.map(&:image) + [@default_image]).uniq.sort
       params[:image] ||= @default_image
       if params[:image].present?
         @commands = @commands.select { |command| command.image == params[:image] }
