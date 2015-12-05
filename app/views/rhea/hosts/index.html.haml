@@ -16,9 +16,9 @@
         %td
           %table.table.table-condensed.table-striped.table-bordered
             %tbody
-              - host[:commands_phases].each do |command, phases|
+              - host[:command_expressions_phases].each do |command_expression, phases|
                 %tr
-                  %td= command
+                  %td= command_expression
                   %td= phases.length
                   %td
                     - uniq_phases = phases.uniq

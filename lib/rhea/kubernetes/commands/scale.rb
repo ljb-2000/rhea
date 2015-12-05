@@ -2,19 +2,19 @@ module Rhea
   module Kubernetes
     module Commands
       class Scale < Base
-        attr_accessor :command, :process_count
+        attr_accessor :command_expression, :process_count
 
-        def initialize(command, process_count)
-          self.command = command
+        def initialize(command_expression, process_count)
+          self.command_expression = command_expression
           self.process_count = process_count
         end
 
         def perform
-          key = command_to_key(command)
+          key = command_expression_to_key(command_expression)
           if is_replication_controller_running?(key)
-            scale_replication_controller(command, process_count)
+            scale_replication_controller(command_expression, process_count)
           else
-            start_replication_controller(command, process_count)
+            start_replication_controller(command_expression, process_count)
           end
         end
 
@@ -24,11 +24,11 @@ module Rhea
           api.get_replication_controllers(label_selector: "name=#{key}").length > 0
         end
 
-        def start_replication_controller(command, process_count)
-          key = command_to_key(command)
-          parsed_command = parse_command(command)
-          raw_command = parsed_command[:raw_command]
-          env_vars = parsed_command[:env_vars]
+        def start_replication_controller(command_expression, process_count)
+          key = command_expression_to_key(command_expression)
+          parsed_command_expression = parse_command_expression(command_expression)
+          raw_command_expression = parsed_command_expression[:raw_command_expression]
+          env_vars = parsed_command_expression[:env_vars]
           formatted_env_vars = format_env_vars(env_vars)
 
           controller = Kubeclient::ReplicationController.new
@@ -39,7 +39,7 @@ module Rhea
               'name' => key
             },
             'annotations' => {
-              'rhea_command' => command
+              'rhea_command' => command_expression
             }
           }
           controller.spec = {
@@ -53,7 +53,7 @@ module Rhea
                   'name' => key
                 },
                 'annotations' => {
-                  'rhea_command' => command
+                  'rhea_command' => command_expression
                 }
               },
               'spec' => {
@@ -62,7 +62,7 @@ module Rhea
                     'name' => key,
                     'image' => Rhea.settings[:image],
                     'env' => formatted_env_vars,
-                    'command' => raw_command.split(/\s+/)
+                    'command' => raw_command_expression.split(/\s+/)
                   }
                 ]
               }
@@ -71,17 +71,17 @@ module Rhea
           api.create_replication_controller(controller)
         end
 
-        def scale_replication_controller(command, process_count)
-          key = command_to_key(command)
+        def scale_replication_controller(command_expression, process_count)
+          key = command_expression_to_key(command_expression)
           controller = api.get_replication_controllers(label_selector: "name=#{key}").first
           controller.spec.replicas = process_count
           api.update_replication_controller(controller)
         end
 
-        def parse_command(command)
-          match = command.match(/((?:[A-Z]+=[^\s]+\s+)+)?(.+)/)
+        def parse_command_expression(command_expression)
+          match = command_expression.match(/((?:[A-Z]+=[^\s]+\s+)+)?(.+)/)
           env_vars_string = match[1]
-          raw_command = match[2]
+          raw_command_expression = match[2]
           env_vars = {}
           if env_vars_string.present?
             env_vars_strings = env_vars_string.strip.split(/\s+/)
@@ -91,7 +91,7 @@ module Rhea
             end
           end
           {
-            raw_command: raw_command,
+            raw_command_expression: raw_command_expression,
             env_vars: env_vars
           }
         end

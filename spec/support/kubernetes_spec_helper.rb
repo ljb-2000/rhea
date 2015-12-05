@@ -10,7 +10,7 @@ module KubernetesSpecHelper
   let(:kube_image) { 'docker.local/myimage:latest' }
   let(:kube_replication_controller_name) { 'rhea-7370-foo-bar' }
 
-  let(:command) { 'foo -bar' }
+  let(:command_expression) { 'foo -bar' }
 
   before :each do
     Rhea.settings.merge!({

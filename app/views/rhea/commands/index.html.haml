@@ -26,25 +26,25 @@
             - @commands.each do |command|
               - escaped_command_expression = CGI.escape(command.expression)
               %tr
-                %td= check_box_tag 'batch_commands[]', escaped_command_expression, false, class: 'command-checkbox'
+                %td= check_box_tag 'batch_command_expressions[]', escaped_command_expression, false, class: 'command-checkbox'
                 %td= command.image
                 %td= command.expression
                 %td= command.process_count
                 %td
-                  = text_field_tag "commands_process_counts[#{command.expression}]", nil, class: 'form-control', style: 'width: 50px;'
+                  = text_field_tag "command_expressions_process_counts[#{command.expression}]", nil, class: 'form-control', style: 'width: 50px;'
                 %td
                   = time_ago_in_words(command.created_at.in_time_zone(Time.zone), include_seconds: true)
                   ago
                 %td{ style: 'white-space: nowrap;' }
-                  = link_to redeploy_commands_path(command: escaped_command_expression), title: 'Redeploy', class: 'btn btn-info btn-xs btn-action' do
+                  = link_to redeploy_commands_path(command_expression: escaped_command_expression), title: 'Redeploy', class: 'btn btn-info btn-xs btn-action' do
                     %span.glyphicon.glyphicon-cloud-download
-                  = link_to reschedule_commands_path(command: escaped_command_expression), title: 'Reschedule', class: 'btn btn-info btn-xs btn-action' do
+                  = link_to reschedule_commands_path(command_expression: escaped_command_expression), title: 'Reschedule', class: 'btn btn-info btn-xs btn-action' do
                     %span.glyphicon.glyphicon-fullscreen
                   - if command.process_count == 0
-                    = link_to delete_commands_path(command: escaped_command_expression), title: 'Delete', class: 'btn btn-danger btn-xs btn-action' do
+                    = link_to delete_commands_path(command_expression: escaped_command_expression), title: 'Delete', class: 'btn btn-danger btn-xs btn-action' do
                       %span.glyphicon.glyphicon-remove
                   - else
-                    = link_to stop_commands_path(command: escaped_command_expression), title: 'Stop', class: 'btn btn-warning btn-xs btn-action' do
+                    = link_to stop_commands_path(command_expression: escaped_command_expression), title: 'Stop', class: 'btn btn-warning btn-xs btn-action' do
                       %span.glyphicon.glyphicon-stop
             %tr
               %td{ colspan: 2 }

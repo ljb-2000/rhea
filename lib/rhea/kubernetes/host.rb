@@ -7,8 +7,8 @@ module Rhea
           pods = api.get_pods
           hostnames_hosts = {}
           pods.each do |pod|
-            command = pod.metadata.annotations.rhea_command
-            next if command.nil?
+            command_expression = pod.metadata.annotations.rhea_command
+            next if command_expression.nil?
             hostname = pod.spec.nodeName
 
             started_at = pod.status.startTime
@@ -26,9 +26,9 @@ module Rhea
             containers.each do |container|
               name = container.name
               hostnames_hosts[hostname] ||= {}
-              hostnames_hosts[hostname][:commands_phases] ||= {}
-              hostnames_hosts[hostname][:commands_phases][command] ||= []
-              hostnames_hosts[hostname][:commands_phases][command] << phase
+              hostnames_hosts[hostname][:command_expressions_phases] ||= {}
+              hostnames_hosts[hostname][:command_expressions_phases][command_expression] ||= []
+              hostnames_hosts[hostname][:command_expressions_phases][command_expression] << phase
             end
           end
           hostnames_hosts

@@ -10,10 +10,10 @@ module Rhea
           @api ||= Rhea::Kubernetes::Api.new
         end
 
-        def command_to_key(command)
+        def command_expression_to_key(command_expression)
           image = Rhea.settings[:image]
-          command_hash = Digest::MD5.hexdigest("#{image}#{command}")[0..3]
-          command_for_host = command.downcase.gsub(/[^-a-z0-9]+/i, '-').squeeze('-')
+          command_hash = Digest::MD5.hexdigest("#{image}#{command_expression}")[0..3]
+          command_for_host = command_expression.downcase.gsub(/[^-a-z0-9]+/i, '-').squeeze('-')
           key = "#{key_prefix}#{command_hash}-#{command_for_host}"
           max_host_name_length = 64
           key = key[0,max_host_name_length]
@@ -34,7 +34,7 @@ module Rhea
             created_at: controller.metadata.creationTimestamp
           )
         end
-        
+
         def key_prefix
           'rhea-'
         end

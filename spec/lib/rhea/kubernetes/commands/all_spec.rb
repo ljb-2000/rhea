@@ -11,13 +11,13 @@ describe Rhea::Kubernetes::Commands::All, :vcr do
       let(:process_count) { 1 }
 
       before :each do
-        Rhea::Kubernetes::Commands::Scale.new(command, process_count).perform
+        Rhea::Kubernetes::Commands::Scale.new(command_expression, process_count).perform
       end
 
       it 'returns the rc' do
         replication_controllers = Rhea::Kubernetes::Commands::All.new.perform
         expected_replication_controller = OpenStruct.new(
-          expression: command,
+          expression: command_expression,
           image: kube_image.split('/').last,
           process_count: process_count
         )

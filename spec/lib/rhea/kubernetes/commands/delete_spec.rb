@@ -9,11 +9,11 @@ describe Rhea::Kubernetes::Commands::Delete, :vcr do
   describe '#perform' do
     context 'an existing rc' do
       before :each do
-        Rhea::Kubernetes::Commands::Scale.new(command, 1).perform
+        Rhea::Kubernetes::Commands::Scale.new(command_expression, 1).perform
       end
 
       it 'deletes the rc' do
-        Rhea::Kubernetes::Commands::Delete.new(command).perform
+        Rhea::Kubernetes::Commands::Delete.new(command_expression).perform
         url = "#{kube_authed_api_url}replicationcontrollers/#{kube_replication_controller_name}"
         expect(WebMock).to have_requested(:delete, url)
       end

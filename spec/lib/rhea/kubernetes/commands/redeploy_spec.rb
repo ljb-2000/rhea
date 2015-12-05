@@ -11,14 +11,14 @@ describe Rhea::Kubernetes::Commands::Redeploy, :vcr do
       let(:process_count) { 2 }
 
       before :each do
-        Rhea::Kubernetes::Commands::Scale.new(command, process_count).perform
+        Rhea::Kubernetes::Commands::Scale.new(command_expression, process_count).perform
       end
 
       it 'redeploys the rc' do
-        Rhea::Kubernetes::Commands::Redeploy.new(command).perform
-        replication_controller = Rhea::Kubernetes::Commands::Get.new(command).perform
+        Rhea::Kubernetes::Commands::Redeploy.new(command_expression).perform
+        replication_controller = Rhea::Kubernetes::Commands::Get.new(command_expression).perform
         expected_replication_controller = OpenStruct.new(
-          expression: command,
+          expression: command_expression,
           image: kube_image.split('/').last,
           process_count: process_count
         )

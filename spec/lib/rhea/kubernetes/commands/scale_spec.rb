@@ -11,12 +11,12 @@ describe Rhea::Kubernetes::Commands::Scale, :vcr do
   describe '#perform' do
     context 'no existing rc' do
       it 'creates an rc' do
-        Rhea::Kubernetes::Commands::Scale.new(command, process_count).perform
+        Rhea::Kubernetes::Commands::Scale.new(command_expression, process_count).perform
         matches = -> (request) do
           data = ActiveSupport::JSON.decode(request.body)
           container = data['spec']['template']['spec']['containers'][0]
           expected_container = {
-            'command' => command.split(' '),
+            'command' => command_expression.split(' '),
             'image' => kube_image,
             'name' => kube_replication_controller_name,
             'env' => kube_env_vars.map { |name, value| { 'name' => name, 'value' => value } }

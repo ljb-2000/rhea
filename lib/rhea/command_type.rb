@@ -26,7 +26,7 @@ module Rhea
       self.format = format
     end
 
-    def input_to_command(input)
+    def input_to_command_expression(input)
       format.gsub('$INPUT', input)
     end
 

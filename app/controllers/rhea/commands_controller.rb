@@ -20,9 +20,9 @@ module Rhea
       redirect_to :back, flash: { error: 'Blank process_count' } and return if process_count.blank?
 
       command_type = Rhea::CommandType.find(command_type_key)
-      command = command_type.input_to_command(command_type_input)
+      command_expression = command_type.input_to_command_expression(command_type_input)
 
-      Rhea::Kubernetes::Commands::Scale.new(command, process_count.to_i).perform
+      Rhea::Kubernetes::Commands::Scale.new(command_expression, process_count.to_i).perform
       wait_for_updates_to_persist
       redirect_to params[:redirect_to], notice: 'Command created!'
     end
@@ -43,75 +43,75 @@ module Rhea
     end
 
     def delete
-      command = params[:command]
-      command = CGI.unescape(command)
-      Rhea::Kubernetes::Commands::Delete.new(command).perform
-      flash[:notice] = "Command '#{command}' deleted!"
+      command_expression = params[:command_expression]
+      command_expression = CGI.unescape(command_expression)
+      Rhea::Kubernetes::Commands::Delete.new(command_expression).perform
+      flash[:notice] = "Command '#{command_expression}' deleted!"
       redirect_to :back
     end
 
     def redeploy
-      command = params[:command]
-      command = CGI.unescape(command)
-      Rhea::Kubernetes::Commands::Redeploy.new(command).perform
-      flash[:notice] = "Command '#{command}' redeployed!"
+      command_expression = params[:command_expression]
+      command_expression = CGI.unescape(command_expression)
+      Rhea::Kubernetes::Commands::Redeploy.new(command_expression).perform
+      flash[:notice] = "Command '#{command_expression}' redeployed!"
       redirect_to :back
     end
 
     def reschedule
-      command = params[:command]
-      command = CGI.unescape(command)
-      Rhea::Kubernetes::Commands::Reschedule.new(command).perform
-      flash[:notice] = "Command '#{command}' rescheduled!"
+      command_expression = params[:command_expression]
+      command_expression = CGI.unescape(command_expression)
+      Rhea::Kubernetes::Commands::Reschedule.new(command_expression).perform
+      flash[:notice] = "Command '#{command_expression}' rescheduled!"
       redirect_to :back
     end
 
     def stop
-      command = params[:command]
-      command = CGI.unescape(command)
-      Rhea::Kubernetes::Commands::Scale.new(command, 0).perform
-      flash[:notice] = "Command '#{command}' stopped!"
+      command_expression = params[:command_expression]
+      command_expression = CGI.unescape(command_expression)
+      Rhea::Kubernetes::Commands::Scale.new(command_expression, 0).perform
+      flash[:notice] = "Command '#{command_expression}' stopped!"
       redirect_to :back
     end
 
     private
 
     def batch_redeploy
-      commands = params[:batch_commands]
-      redirect_to params[:redirect_to], notice: 'No commands were selected!' and return if commands.blank?
-      threads = commands.map do |command|
-        command = CGI.unescape(command)
+      command_expressions = params[:batch_command_expressions]
+      redirect_to params[:redirect_to], notice: 'No commands were selected!' and return if command_expressions.blank?
+      threads = command_expressions.map do |command_expression|
+        command_expression = CGI.unescape(command_expression)
         Thread.new do
-          Rhea::Kubernetes::Commands::Redeploy.new(command).perform
+          Rhea::Kubernetes::Commands::Redeploy.new(command_expression).perform
         end
       end
       threads.map(&:join)
       wait_for_updates_to_persist
-      redirect_to params[:redirect_to], notice: "Redeployed #{commands.length} #{'command'.pluralize(commands.length)}!"
+      redirect_to params[:redirect_to], notice: "Redeployed #{command_expressions.length} #{'command'.pluralize(command_expressions.length)}!"
     end
 
     def batch_reschedule
-      commands = params[:batch_commands]
-      redirect_to params[:redirect_to], notice: 'No commands were selected!' and return if commands.blank?
-      threads = commands.map do |command|
-        command = CGI.unescape(command)
+      command_expressions = params[:batch_command_expressions]
+      redirect_to params[:redirect_to], notice: 'No commands were selected!' and return if command_expressions.blank?
+      threads = command_expressions.map do |command_expression|
+        command_expression = CGI.unescape(command_expression)
         Thread.new do
-          Rhea::Kubernetes::Commands::Reschedule.new(command).perform
+          Rhea::Kubernetes::Commands::Reschedule.new(command_expression).perform
         end
       end
       threads.map(&:join)
       wait_for_updates_to_persist
-      redirect_to params[:redirect_to], notice: "Rescheduled #{commands.length} #{'command'.pluralize(commands.length)}!"
+      redirect_to params[:redirect_to], notice: "Rescheduled #{command_expressions.length} #{'command'.pluralize(command_expressions.length)}!"
     end
 
     def batch_scale
-      commands_process_counts = params[:commands_process_counts]
+      command_expressions_process_counts = params[:command_expressions_process_counts]
       scaled_commands_count = 0
-      commands_process_counts.each do |command, process_count|
+      command_expressions_process_counts.each do |command_expression, process_count|
         next if process_count.blank?
         process_count = process_count.to_i
-        command = CGI.unescape(command)
-        Rhea::Kubernetes::Commands::Scale.new(command, process_count).perform
+        command_expression = CGI.unescape(command_expression)
+        Rhea::Kubernetes::Commands::Scale.new(command_expression, process_count).perform
         scaled_commands_count += 1
       end
       wait_for_updates_to_persist
@@ -119,17 +119,17 @@ module Rhea
     end
 
     def batch_stop
-      commands = params[:batch_commands]
-      redirect_to params[:redirect_to], notice: 'No commands were selected!' and return if commands.blank?
-      threads = commands.map do |command|
-        command = CGI.unescape(command)
+      command_expressions = params[:batch_command_expressions]
+      redirect_to params[:redirect_to], notice: 'No commands were selected!' and return if command_expressions.blank?
+      threads = command_expressions.map do |command_expression|
+        command_expression = CGI.unescape(command_expression)
         Thread.new do
-          Rhea::Kubernetes::Commands::Scale.new(command, 0).perform
+          Rhea::Kubernetes::Commands::Scale.new(command_expression, 0).perform
         end
       end
       threads.map(&:join)
       wait_for_updates_to_persist
-      redirect_to params[:redirect_to], notice: "Stopped #{commands.length} #{'command'.pluralize(commands.length)}!"
+      redirect_to params[:redirect_to], notice: "Stopped #{command_expressions.length} #{'command'.pluralize(command_expressions.length)}!"
     end
 
     # Sleep briefly to prevent user needing to refresh the page to see updated counts
