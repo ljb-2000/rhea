@@ -36,24 +36,24 @@
                   = time_ago_in_words(command.created_at.in_time_zone(Time.zone), include_seconds: true)
                   ago
                 %td{ style: 'white-space: nowrap;' }
-                  = link_to redeploy_commands_path(command: escaped_command_expression), title: 'Redeploy', class: 'btn btn-info btn-xs' do
+                  = link_to redeploy_commands_path(command: escaped_command_expression), title: 'Redeploy', class: 'btn btn-info btn-xs btn-action' do
                     %span.glyphicon.glyphicon-cloud-download
-                  = link_to reschedule_commands_path(command: escaped_command_expression), title: 'Reschedule', class: 'btn btn-info btn-xs' do
+                  = link_to reschedule_commands_path(command: escaped_command_expression), title: 'Reschedule', class: 'btn btn-info btn-xs btn-action' do
                     %span.glyphicon.glyphicon-fullscreen
                   - if command.process_count == 0
-                    = link_to delete_commands_path(command: escaped_command_expression), title: 'Delete', class: 'btn btn-danger btn-xs' do
+                    = link_to delete_commands_path(command: escaped_command_expression), title: 'Delete', class: 'btn btn-danger btn-xs btn-action' do
                       %span.glyphicon.glyphicon-remove
                   - else
-                    = link_to stop_commands_path(command: escaped_command_expression), title: 'Stop', class: 'btn btn-warning btn-xs' do
+                    = link_to stop_commands_path(command: escaped_command_expression), title: 'Stop', class: 'btn btn-warning btn-xs btn-action' do
                       %span.glyphicon.glyphicon-stop
             %tr
               %td{ colspan: 2 }
                 .batch-actions{ style: 'display: none;' }
-                  = button_tag name: 'batch_action', value: 'redeploy', title: 'Redeploy', class: 'btn btn-info btn-xs' do
+                  = button_tag name: 'batch_action', value: 'redeploy', title: 'Redeploy', class: 'btn btn-info btn-xs btn-action' do
                     %span.glyphicon.glyphicon-cloud-download
-                  = button_tag name: 'batch_action', value: 'reschedule', title: 'Reschedule', class: 'btn btn-info btn-xs' do
+                  = button_tag name: 'batch_action', value: 'reschedule', title: 'Reschedule', class: 'btn btn-info btn-xs btn-action' do
                     %span.glyphicon.glyphicon-fullscreen
-                  = button_tag name: 'batch_action', value: 'stop', title: 'Stop', class: 'btn btn-warning btn-xs' do
+                  = button_tag name: 'batch_action', value: 'stop', title: 'Stop', class: 'btn btn-warning btn-xs btn-action' do
                     %span.glyphicon.glyphicon-stop
               %td
               %td
