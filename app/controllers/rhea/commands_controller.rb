@@ -101,7 +101,7 @@ module Rhea
       end
       threads.map(&:join)
       wait_for_updates_to_persist
-      redirect_to params[:redirect_to], notice: "Rescheduleed #{commands.length} #{'command'.pluralize(commands.length)}!"
+      redirect_to params[:redirect_to], notice: "Rescheduled #{commands.length} #{'command'.pluralize(commands.length)}!"
     end
 
     def batch_scale
