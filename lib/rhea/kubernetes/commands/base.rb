@@ -31,7 +31,7 @@ module Rhea
             expression: expression,
             image: image,
             process_count: process_count,
-            created_at: controller.metadata.creationTimestamp
+            created_at: Time.parse(controller.metadata.creationTimestamp)
           )
         end
 
