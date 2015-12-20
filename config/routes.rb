@@ -11,7 +11,7 @@ Rhea::Engine.routes.draw do
   end
   resources :events, only: [:index]
   resources :nodes, only: [:index]
-  resources :services, only: [:index]
+  resources :system_services, only: [:index]
 
   namespace 'api' do
     get '/jobs', to: 'jobs#index'

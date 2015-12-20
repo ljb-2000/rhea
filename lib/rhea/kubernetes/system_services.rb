@@ -1,8 +1,10 @@
 module Rhea
   module Kubernetes
-    class Service
-      def self.names_paths
-        @names_paths ||= begin
+    module SystemServices
+      module_function
+
+      def service_names_urls
+        @service_names_urls ||= begin
           api_url = Rhea.settings[:kube_api][:url]
           root_url = api_url.sub('/api/', '/')
           services_url = "#{api_url}v1/proxy/namespaces/kube-system/services/"

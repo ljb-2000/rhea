@@ -23,10 +23,10 @@
               = link_to 'Nodes', nodes_path
             %li{ class: params[:controller] == 'rhea/events' ? 'active' : '' }
               = link_to 'Events', events_path
-            %li{ class: params[:controller] == 'rhea/services' ? 'active' : '' }
-              = link_to 'Services', services_path
+            %li{ class: params[:controller] == 'rhea/system_services' ? 'active' : '' }
+              = link_to 'System Services', system_services_path
             %li
-              = link_to 'Kubernetes UI', Rhea::Kubernetes::Service.names_paths['Kubernetes UI'], target: '_blank'
+              = link_to 'Kubernetes UI', Rhea::Kubernetes::SystemServices.service_names_urls['Kubernetes UI'], target: '_blank'
     .container
       .row
         .col-lg-12
