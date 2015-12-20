@@ -10,11 +10,12 @@ module Rhea
             command_expression = pod.metadata.annotations.rhea_command
             next if command_expression.nil?
             hostname = pod.spec.nodeName
+            hostnames_nodes[hostname] ||= {}
+            hostnames_nodes[hostname][:image] = pod.status.containerStatuses_as_a_hash[0]['image'].split('/').last
 
             started_at = pod.status.startTime
             if started_at
               started_at = Time.parse(started_at)
-              hostnames_nodes[hostname] ||= {}
               last_started_at = hostnames_nodes[hostname][:last_started_at]
               if last_started_at.nil? || started_at > last_started_at
                 hostnames_nodes[hostname][:last_started_at] = started_at
@@ -24,11 +25,14 @@ module Rhea
             phase = pod.status.phase
             containers = pod.spec.containers
             containers.each do |container|
-              name = container.name
-              hostnames_nodes[hostname] ||= {}
-              hostnames_nodes[hostname][:command_expressions_phases] ||= {}
-              hostnames_nodes[hostname][:command_expressions_phases][command_expression] ||= []
-              hostnames_nodes[hostname][:command_expressions_phases][command_expression] << phase
+              image = container.image.split('/').last
+              command = OpenStruct.new(
+                expression: command_expression,
+                image: image
+              )
+              hostnames_nodes[hostname][:commands_phases] ||= {}
+              hostnames_nodes[hostname][:commands_phases][command] ||= []
+              hostnames_nodes[hostname][:commands_phases][command] << phase
             end
           end
           hostnames_nodes.map do |hostname, node|
