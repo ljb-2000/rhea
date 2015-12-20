@@ -6,17 +6,17 @@
       %th Commands
       %th
   %tbody
-    - @hostnames_hosts.each do |hostname, host|
+    - @nodes.each do |node|
       %tr
-        %td= hostname
+        %td= node.hostname
         %td
-          - if started_at = host[:last_started_at]
+          - if started_at = node.last_started_at
             = time_ago_in_words(started_at)
             ago
         %td
           %table.table.table-condensed.table-striped.table-bordered
             %tbody
-              - host[:command_expressions_phases].each do |command_expression, phases|
+              - node.command_expressions_phases.each do |command_expression, phases|
                 %tr
                   %td= command_expression
                   %td= phases.length

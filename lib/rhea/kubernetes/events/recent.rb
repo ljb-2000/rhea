@@ -1,8 +1,8 @@
 module Rhea
   module Kubernetes
-    class Event
-      class << self
-        def recent
+    module Events
+      class Recent
+        def perform
           api = Rhea::Kubernetes::Api.new
           events = api.get_events
           events.map! do |event|

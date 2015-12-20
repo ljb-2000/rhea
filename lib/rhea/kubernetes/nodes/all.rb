@@ -1,11 +1,11 @@
 module Rhea
   module Kubernetes
-    class Host
-      class << self
-        def hostnames_hosts
+    module Nodes
+      class All
+        def perform
           api = Rhea::Kubernetes::Api.new
           pods = api.get_pods
-          hostnames_hosts = {}
+          hostnames_nodes = {}
           pods.each do |pod|
             command_expression = pod.metadata.annotations.rhea_command
             next if command_expression.nil?
@@ -14,10 +14,10 @@ module Rhea
             started_at = pod.status.startTime
             if started_at
               started_at = Time.parse(started_at)
-              hostnames_hosts[hostname] ||= {}
-              last_started_at = hostnames_hosts[hostname][:last_started_at]
+              hostnames_nodes[hostname] ||= {}
+              last_started_at = hostnames_nodes[hostname][:last_started_at]
               if last_started_at.nil? || started_at > last_started_at
-                hostnames_hosts[hostname][:last_started_at] = started_at
+                hostnames_nodes[hostname][:last_started_at] = started_at
               end
             end
 
@@ -25,13 +25,15 @@ module Rhea
             containers = pod.spec.containers
             containers.each do |container|
               name = container.name
-              hostnames_hosts[hostname] ||= {}
-              hostnames_hosts[hostname][:command_expressions_phases] ||= {}
-              hostnames_hosts[hostname][:command_expressions_phases][command_expression] ||= []
-              hostnames_hosts[hostname][:command_expressions_phases][command_expression] << phase
+              hostnames_nodes[hostname] ||= {}
+              hostnames_nodes[hostname][:command_expressions_phases] ||= {}
+              hostnames_nodes[hostname][:command_expressions_phases][command_expression] ||= []
+              hostnames_nodes[hostname][:command_expressions_phases][command_expression] << phase
             end
           end
-          hostnames_hosts
+          hostnames_nodes.map do |hostname, node|
+            OpenStruct.new(node.merge(hostname: hostname))
+          end
         end
       end
     end

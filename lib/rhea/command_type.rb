@@ -34,22 +34,20 @@ module Rhea
       format.gsub('$INPUT', '$input')
     end
 
-    class << self
-      def all
-        @all ||= COMMAND_TYPES.map do |attributes|
-          new(attributes)
-        end
+    def self.all
+      @all ||= COMMAND_TYPES.map do |attributes|
+        new(attributes)
       end
+    end
 
-      def find(key)
-        command_type = all.find { |command_type| command_type.key == key }
-        raise "Invalid key: #{key}" unless command_type
-        command_type
-      end
+    def self.find(key)
+      command_type = all.find { |command_type| command_type.key == key }
+      raise "Invalid key: #{key}" unless command_type
+      command_type
+    end
 
-      def options_for_select
-        all.map { |command_type| [command_type.name, command_type.key] }
-      end
+    def self.options_for_select
+      all.map { |command_type| [command_type.name, command_type.key] }
     end
   end
 end

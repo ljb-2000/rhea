@@ -19,8 +19,8 @@
           %ul.nav.navbar-nav
             %li{ class: params[:controller] == 'rhea/commands' ? 'active' : '' }
               = link_to 'Commands', commands_path
-            %li{ class: params[:controller] == 'rhea/hosts' ? 'active' : '' }
-              = link_to 'Hosts', hosts_path
+            %li{ class: params[:controller] == 'rhea/nodes' ? 'active' : '' }
+              = link_to 'Nodes', nodes_path
             %li{ class: params[:controller] == 'rhea/events' ? 'active' : '' }
               = link_to 'Events', events_path
             %li{ class: params[:controller] == 'rhea/services' ? 'active' : '' }

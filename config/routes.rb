@@ -10,7 +10,7 @@ Rhea::Engine.routes.draw do
     end
   end
   resources :events, only: [:index]
-  resources :hosts, only: [:index]
+  resources :nodes, only: [:index]
   resources :services, only: [:index]
 
   namespace 'api' do
