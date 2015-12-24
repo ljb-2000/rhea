@@ -2,24 +2,6 @@ module Rhea
   class CommandType
     attr_accessor :key, :name, :format
 
-    COMMAND_TYPES = [
-      {
-        key: 'default',
-        name: 'Default',
-        format: '$INPUT'
-      },
-      {
-        key: 'resque',
-        name: 'Resque',
-        format: 'QUEUES=$INPUT rake resque:work'
-      },
-      {
-        key: 'sidekiq',
-        name: 'Sidekiq',
-        format: 'bundle exec sidekiq $INPUT'
-      }
-    ]
-
     def initialize(key:, name:, format:)
       self.key = key
       self.name = name
@@ -35,7 +17,7 @@ module Rhea
     end
 
     def self.all
-      @all ||= COMMAND_TYPES.map do |attributes|
+      @all ||= Rhea.configuration.command_types.map do |attributes|
         new(attributes)
       end
     end
