@@ -13,7 +13,7 @@ module Rhea
     def create
       command_type_key = params[:command_type_key].presence
       command_type_input = params[:command_type_input].presence
-      process_count = params[:process_count].presence
+      process_count = params[:process_count].presence || 1
 
       redirect_to :back, flash: { error: 'Blank command_type_key' } and return if command_type_key.blank?
       redirect_to :back, flash: { error: 'Blank command_type_input' } and return if command_type_input.blank?
