@@ -11,7 +11,7 @@ module Rhea
         end
 
         def command_expression_to_key(command_expression)
-          image = Rhea.settings[:image]
+          image = Rhea.configuration.image
           command_hash = Digest::MD5.hexdigest("#{image}#{command_expression}")[0..3]
           command_for_host = command_expression.downcase.gsub(/[^-a-z0-9]+/i, '-').squeeze('-')
           key = "#{key_prefix}#{command_hash}-#{command_for_host}"

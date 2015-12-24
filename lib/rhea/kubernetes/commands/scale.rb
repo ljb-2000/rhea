@@ -60,7 +60,7 @@ module Rhea
                 'containers' => [
                   {
                     'name' => key,
-                    'image' => Rhea.settings[:image],
+                    'image' => Rhea.configuration.image,
                     'env' => formatted_env_vars,
                     'command' => raw_command_expression.split(/\s+/)
                   }
@@ -97,7 +97,7 @@ module Rhea
         end
 
         def format_env_vars(env_vars)
-          hash = env_vars.merge(Rhea.settings[:env_vars])
+          hash = env_vars.merge(Rhea.configuration.env_vars)
           hash.map do |name, value|
             {
               'name' => name,

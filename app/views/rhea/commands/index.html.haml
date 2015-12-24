@@ -77,7 +77,7 @@
                 %th Processes
             %tbody
               %tr
-                %td= select_tag :command_type_key, options_for_select(Rhea::CommandType.options_for_select, Rhea.settings[:default_command_type_key]), class: 'form-control', style: 'width: 90px;', required: 'required'
+                %td= select_tag :command_type_key, options_for_select(Rhea::CommandType.options_for_select, Rhea.configuration.default_command_type_key), class: 'form-control', style: 'width: 90px;', required: 'required'
                 %td= text_field_tag :command_type_input, nil, class: 'form-control', style: 'width: 130px;', required: 'required'
                 %td= text_field_tag :process_count, nil, class: 'form-control', style: 'width: 50px;', required: 'required'
           = submit_tag 'Create', class: 'btn btn-default'

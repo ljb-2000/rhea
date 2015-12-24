@@ -13,18 +13,18 @@ module KubernetesSpecHelper
   let(:command_expression) { 'foo -bar' }
 
   before :each do
-    Rhea.settings.merge!({
-      default_command_type_key: 'sidekiq',
-      env_vars: kube_env_vars,
-      kube_api: {
+    Rhea.configure do |config|
+      config.default_command_type_key = 'sidekiq'
+      config.env_vars = kube_env_vars
+      config.kube_api = {
         options: {
           auth_options: { user: kube_user, password: kube_password },
           ssl_options: { verify_ssl: OpenSSL::SSL::VERIFY_NONE }
         },
         url: "https://#{kube_api_host}/api/"
-      },
-      image: kube_image
-    })
+      }
+      config.image = kube_image
+    end
   end
 
   def delete_replication_controllers

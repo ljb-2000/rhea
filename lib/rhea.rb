@@ -6,14 +6,13 @@ require "#{directory}/rhea/kubernetes/commands/base"
 Dir.glob("#{directory}/rhea/**/*.rb") { |file| require file }
 
 module Rhea
-  @settings = {
-    default_command_type_key: 'default',
-    env_vars: {},
-    image: nil,
-    kube_api: {}
-  }
+  module_function
 
-  def self.settings
-    @settings
+  def self.configure
+    yield(configuration) if block_given?
+  end
+
+  def self.configuration
+    @configuration ||= Configuration.new
   end
 end
