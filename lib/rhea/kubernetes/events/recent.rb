@@ -15,7 +15,7 @@ module Rhea
               created_at: Time.parse(event.lastTimestamp)
             )
           end
-          events.sort_by(&:created_at).reverse[0,200]
+          events.sort_by(&:created_at).reverse
         end
       end
     end

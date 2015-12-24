@@ -1,3 +1,4 @@
+require 'kaminari'
 require 'kubeclient'
 require 'ostruct'
 
