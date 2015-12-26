@@ -11,7 +11,7 @@ module Rhea
             next if command_expression.nil?
             hostname = pod.spec.nodeName
             hostnames_nodes[hostname] ||= {}
-            hostnames_nodes[hostname][:image] = pod.status.containerStatuses_as_a_hash[0]['image'].split('/').last
+            hostnames_nodes[hostname][:image] = pod.status.containerStatuses_as_a_hash[0]['image']
 
             started_at = pod.status.startTime
             if started_at
@@ -25,7 +25,7 @@ module Rhea
             phase = pod.status.phase
             containers = pod.spec.containers
             containers.each do |container|
-              image = container.image.split('/').last
+              image = container.image
               command = OpenStruct.new(
                 expression: command_expression,
                 image: image

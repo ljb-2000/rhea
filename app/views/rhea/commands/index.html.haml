@@ -4,7 +4,8 @@
       = form_tag commands_path, method: 'GET', class: 'form-inline' do
         .form-group
           = label_tag :image, 'Image:', style: 'margin-right: 5px; font-size: 12px; font-weight: normal;'
-          = select_tag :image, options_for_select([['All', nil]] + @images, params[:image].presence), class: 'form-control input-sm', onchange: "$(this).closest('form').submit();"
+          - image_options = [['All', nil]] + @images.map { |image| [humanize_image(image), image] }
+          = select_tag :image, options_for_select(image_options, params[:image].presence), class: 'form-control input-sm', onchange: "$(this).closest('form').submit();"
     %h3 Commands
     %br
     - if @commands.blank?
@@ -27,7 +28,7 @@
               - escaped_command_expression = CGI.escape(command.expression)
               %tr
                 %td= check_box_tag 'batch_command_expressions[]', escaped_command_expression, false, class: 'command-checkbox'
-                %td= command.image
+                %td= humanize_image(command.image)
                 %td= command.expression
                 %td= command.process_count
                 %td

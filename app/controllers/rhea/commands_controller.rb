@@ -2,7 +2,7 @@ module Rhea
   class CommandsController < Rhea::BaseController
     def index
       @commands = Rhea::Kubernetes::Commands::All.new.perform
-      @default_image = Rhea.configuration.image.split('/').last
+      @default_image = Rhea.configuration.image
       @images = (@commands.map(&:image) + [@default_image]).uniq.sort
       params[:image] ||= @default_image
       if params[:image].present?

@@ -26,7 +26,7 @@ module Rhea
           expression = controller.spec.template.metadata.annotations.try(:rhea_command)
           return if expression.nil?
           process_count = controller.status.replicas
-          image = controller.spec.template.spec.containers.first.image.split('/').last
+          image = controller.spec.template.spec.containers.first.image
           OpenStruct.new(
             expression: expression,
             image: image,

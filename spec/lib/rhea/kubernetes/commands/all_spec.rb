@@ -18,7 +18,7 @@ describe Rhea::Kubernetes::Commands::All, :vcr do
         replication_controllers = Rhea::Kubernetes::Commands::All.new.perform
         expected_replication_controller = OpenStruct.new(
           expression: command_expression,
-          image: kube_image.split('/').last,
+          image: kube_image,
           process_count: process_count
         )
         expect(replication_controllers.length).to eq(1)

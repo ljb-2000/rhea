@@ -8,6 +8,10 @@ module Rhea
       Rhea.root_path
     end
 
+    def humanize_image(image)
+      image.split('/').last
+    end
+
     ALERT_TYPES = [:success, :info, :warning, :danger] unless const_defined?(:ALERT_TYPES)
 
     def bootstrap_flash(options = {})

@@ -19,7 +19,7 @@ describe Rhea::Kubernetes::Commands::Redeploy, :vcr do
         replication_controller = Rhea::Kubernetes::Commands::Get.new(command_expression).perform
         expected_replication_controller = OpenStruct.new(
           expression: command_expression,
-          image: kube_image.split('/').last,
+          image: kube_image,
           process_count: process_count
         )
         expect(replication_controller.to_h).to include(expected_replication_controller.to_h)
