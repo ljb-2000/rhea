@@ -7,7 +7,6 @@
           - image_options = [['All', nil]] + @images.map { |image| [humanize_image(image), image] }
           = select_tag :image, options_for_select(image_options, params[:image].presence), class: 'form-control input-sm', onchange: "$(this).closest('form').submit();"
     %h3 Commands
-    %br
     - if @commands.blank?
       %p No commands found.
     - else
