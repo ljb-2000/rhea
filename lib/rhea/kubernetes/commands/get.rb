@@ -2,15 +2,14 @@ module Rhea
   module Kubernetes
     module Commands
       class Get < Base
-        attr_accessor :command_expression
+        attr_accessor :command
 
-        def initialize(command_expression)
-          self.command_expression = command_expression
+        def initialize(command_attributes)
+          self.command = Command.new(command_attributes)
         end
 
         def perform
-          key = command_expression_to_key(command_expression)
-          controller = api.get_replication_controllers(label_selector: "name=#{key}").first
+          controller = api.get_replication_controllers(label_selector: "name=#{command.key}").first
           controller_to_command(controller)
         end
       end

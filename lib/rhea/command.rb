@@ -2,9 +2,11 @@ module Rhea
   class Command
     attr_accessor :expression, :image, :process_count, :created_at
 
-    def initialize(expression:, image:, process_count: nil, created_at: nil)
+    KEY_PREFIX = 'rhea-'
+
+    def initialize(expression:, image: nil, process_count: nil, created_at: nil)
       self.expression = expression
-      self.image = image
+      self.image = image || Rhea.configuration.image
       self.process_count = process_count
       self.created_at = created_at
     end
@@ -16,6 +18,17 @@ module Rhea
         process_count: process_count,
         created_at: created_at
       }
+    end
+
+    def key
+      command_hash = Digest::MD5.hexdigest("#{image}#{expression}")[0..3]
+      command_for_host = expression.downcase.gsub(/[^-a-z0-9]+/i, '-').squeeze('-')
+      key = "#{KEY_PREFIX}#{command_hash}-#{command_for_host}"
+      max_host_name_length = 62
+      key = key[0,max_host_name_length]
+      # The key can't end with a '-'
+      key.gsub!(/\-+$/, '')
+      key
     end
   end
 end

@@ -11,7 +11,7 @@ describe Rhea::Kubernetes::Commands::Scale, :vcr do
   describe '#perform' do
     context 'no existing rc' do
       it 'creates an rc' do
-        described_class.new(command_expression, process_count).perform
+        described_class.new(expression: command_expression, process_count: process_count).perform
         matches = -> (request) do
           data = ActiveSupport::JSON.decode(request.body)
           container = data['spec']['template']['spec']['containers'][0]

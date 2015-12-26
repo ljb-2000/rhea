@@ -11,11 +11,11 @@ describe Rhea::Kubernetes::Commands::Get, :vcr do
       let(:process_count) { 1 }
 
       before :each do
-        Rhea::Kubernetes::Commands::Scale.new(command_expression, process_count).perform
+        Rhea::Kubernetes::Commands::Scale.new(expression: command_expression, image: kube_image, process_count: process_count).perform
       end
 
       it 'gets the rc' do
-        replication_controller = described_class.new(command_expression).perform
+        replication_controller = described_class.new(expression: command_expression).perform
         expected_attributes = {
           expression: command_expression,
           image: kube_image,

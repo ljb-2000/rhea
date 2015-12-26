@@ -11,7 +11,7 @@ describe Rhea::Kubernetes::Commands::All, :vcr do
       let(:process_count) { 1 }
 
       before :each do
-        Rhea::Kubernetes::Commands::Scale.new(command_expression, process_count).perform
+        Rhea::Kubernetes::Commands::Scale.new(expression: command_expression, process_count: process_count).perform
       end
 
       it 'returns the rc' do

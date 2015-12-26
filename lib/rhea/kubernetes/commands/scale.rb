@@ -2,66 +2,62 @@ module Rhea
   module Kubernetes
     module Commands
       class Scale < Base
-        attr_accessor :command_expression, :process_count, :image
+        attr_accessor :command
 
-        def initialize(command_expression, process_count, image: nil)
-          self.command_expression = command_expression
-          self.process_count = process_count
-          self.image = image || Rhea.configuration.image
+        def initialize(command_attributes)
+          self.command = Command.new(command_attributes)
         end
 
         def perform
-          key = command_expression_to_key(command_expression)
-          if is_replication_controller_running?(key)
-            scale_replication_controller(command_expression, process_count)
+          if is_replication_controller_running?
+            scale_replication_controller
           else
-            start_replication_controller(command_expression, process_count)
+            start_replication_controller
           end
         end
 
         private
 
-        def is_replication_controller_running?(key)
-          api.get_replication_controllers(label_selector: "name=#{key}").length > 0
+        def is_replication_controller_running?
+          api.get_replication_controllers(label_selector: "name=#{command.key}").length > 0
         end
 
-        def start_replication_controller(command_expression, process_count)
-          key = command_expression_to_key(command_expression)
-          parsed_command_expression = parse_command_expression(command_expression)
+        def start_replication_controller
+          parsed_command_expression = parse_command_expression
           raw_command_expression = parsed_command_expression[:raw_command_expression]
           env_vars = parsed_command_expression[:env_vars]
           formatted_env_vars = format_env_vars(env_vars)
 
           controller = Kubeclient::ReplicationController.new
           controller.metadata = {
-            'name' => key,
+            'name' => command.key,
             'namespace' => NAMESPACE,
             'labels' => {
-              'name' => key
+              'name' => command.key
             },
             'annotations' => {
-              'rhea_command' => command_expression
+              'rhea_command' => command.expression
             }
           }
           controller.spec = {
-            'replicas' => process_count,
+            'replicas' => command.process_count,
             'selector' => {
-              'name' => key
+              'name' => command.key
             },
             'template' => {
               'metadata' => {
                 'labels' => {
-                  'name' => key
+                  'name' => command.key
                 },
                 'annotations' => {
-                  'rhea_command' => command_expression
+                  'rhea_command' => command.expression
                 }
               },
               'spec' => {
                 'containers' => [
                   {
-                    'name' => key,
-                    'image' => image,
+                    'name' => command.key,
+                    'image' => command.image,
                     'env' => formatted_env_vars,
                     'command' => raw_command_expression.split(/\s+/)
                   }
@@ -72,15 +68,14 @@ module Rhea
           api.create_replication_controller(controller)
         end
 
-        def scale_replication_controller(command_expression, process_count)
-          key = command_expression_to_key(command_expression)
-          controller = api.get_replication_controllers(label_selector: "name=#{key}").first
-          controller.spec.replicas = process_count
+        def scale_replication_controller
+          controller = api.get_replication_controllers(label_selector: "name=#{command.key}").first
+          controller.spec.replicas = command.process_count
           api.update_replication_controller(controller)
         end
 
-        def parse_command_expression(command_expression)
-          match = command_expression.match(/((?:[A-Z]+=[^\s]+\s+)+)?(.+)/)
+        def parse_command_expression
+          match = command.expression.match(/((?:[A-Z]+=[^\s]+\s+)+)?(.+)/)
           env_vars_string = match[1]
           raw_command_expression = match[2]
           env_vars = {}

@@ -22,7 +22,7 @@ module Rhea
       command_type = Rhea::CommandType.find(command_type_key)
       command_expression = command_type.input_to_command_expression(command_type_input)
 
-      Rhea::Kubernetes::Commands::Scale.new(command_expression, process_count.to_i).perform
+      Rhea::Kubernetes::Commands::Scale.new(expression: command_expression, process_count: process_count.to_i).perform
       wait_for_updates_to_persist
       redirect_to params[:redirect_to], notice: 'Command created!'
     end
@@ -45,7 +45,7 @@ module Rhea
     def delete
       command_expression = params[:command_expression]
       command_expression = CGI.unescape(command_expression)
-      Rhea::Kubernetes::Commands::Delete.new(command_expression).perform
+      Rhea::Kubernetes::Commands::Delete.new(expression: command_expression).perform
       flash[:notice] = "Command '#{command_expression}' deleted!"
       redirect_to :back
     end
@@ -74,7 +74,7 @@ module Rhea
     def redeploy
       command_expression = params[:command_expression]
       command_expression = CGI.unescape(command_expression)
-      Rhea::Kubernetes::Commands::Redeploy.new(command_expression).perform
+      Rhea::Kubernetes::Commands::Redeploy.new(expression: command_expression).perform
       flash[:notice] = "Command '#{command_expression}' redeployed!"
       redirect_to :back
     end
@@ -82,7 +82,7 @@ module Rhea
     def reschedule
       command_expression = params[:command_expression]
       command_expression = CGI.unescape(command_expression)
-      Rhea::Kubernetes::Commands::Reschedule.new(command_expression).perform
+      Rhea::Kubernetes::Commands::Reschedule.new(expression: command_expression).perform
       flash[:notice] = "Command '#{command_expression}' rescheduled!"
       redirect_to :back
     end
@@ -90,7 +90,7 @@ module Rhea
     def stop
       command_expression = params[:command_expression]
       command_expression = CGI.unescape(command_expression)
-      Rhea::Kubernetes::Commands::Scale.new(command_expression, 0).perform
+      Rhea::Kubernetes::Commands::Scale.new(expression: command_expression, process_count: 0).perform
       flash[:notice] = "Command '#{command_expression}' stopped!"
       redirect_to :back
     end
@@ -103,7 +103,7 @@ module Rhea
       threads = command_expressions.map do |command_expression|
         command_expression = CGI.unescape(command_expression)
         Thread.new do
-          Rhea::Kubernetes::Commands::Redeploy.new(command_expression).perform
+          Rhea::Kubernetes::Commands::Redeploy.new(expression: command_expression).perform
         end
       end
       threads.map(&:join)
@@ -117,7 +117,7 @@ module Rhea
       threads = command_expressions.map do |command_expression|
         command_expression = CGI.unescape(command_expression)
         Thread.new do
-          Rhea::Kubernetes::Commands::Reschedule.new(command_expression).perform
+          Rhea::Kubernetes::Commands::Reschedule.new(expression: command_expression).perform
         end
       end
       threads.map(&:join)
@@ -132,7 +132,7 @@ module Rhea
         next if process_count.blank?
         process_count = process_count.to_i
         command_expression = CGI.unescape(command_expression)
-        Rhea::Kubernetes::Commands::Scale.new(command_expression, process_count).perform
+        Rhea::Kubernetes::Commands::Scale.new(expression: command_expression, process_count: process_count).perform
         scaled_commands_count += 1
       end
       wait_for_updates_to_persist
@@ -145,7 +145,7 @@ module Rhea
       threads = command_expressions.map do |command_expression|
         command_expression = CGI.unescape(command_expression)
         Thread.new do
-          Rhea::Kubernetes::Commands::Scale.new(command_expression, 0).perform
+          Rhea::Kubernetes::Commands::Scale.new(expression: command_expression, process_count: 0).perform
         end
       end
       threads.map(&:join)

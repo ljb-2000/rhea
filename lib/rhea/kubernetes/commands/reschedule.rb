@@ -2,17 +2,18 @@ module Rhea
   module Kubernetes
     module Commands
       class Reschedule < Base
-        attr_accessor :command_expression
+        attr_accessor :command
 
-        def initialize(command_expression)
-          self.command_expression = command_expression
+        def initialize(command_attributes)
+          self.command = Command.new(command_attributes)
         end
 
         def perform
-          controller = Get.new(command_expression).perform
+          command_attributes = command.attributes.slice(:image, :expression)
+          controller = Get.new(command_attributes).perform
           process_count = controller.process_count
-          Scale.new(command_expression, 0).perform
-          Scale.new(command_expression, process_count).perform
+          Scale.new(command_attributes.merge(process_count: 0)).perform
+          Scale.new(command_attributes.merge(process_count: process_count)).perform
         end
       end
     end

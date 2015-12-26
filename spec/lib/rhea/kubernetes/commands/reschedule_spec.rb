@@ -11,12 +11,12 @@ describe Rhea::Kubernetes::Commands::Reschedule, :vcr do
       let(:process_count) { 2 }
 
       before :each do
-        Rhea::Kubernetes::Commands::Scale.new(command_expression, process_count).perform
+        Rhea::Kubernetes::Commands::Scale.new(expression: command_expression, process_count: process_count).perform
       end
 
       it 'reschedules the rc' do
-        described_class.new(command_expression).perform
-        replication_controller = Rhea::Kubernetes::Commands::Get.new(command_expression).perform
+        described_class.new(expression: command_expression).perform
+        replication_controller = Rhea::Kubernetes::Commands::Get.new(expression: command_expression).perform
         expected_attributes = {
           expression: command_expression,
           image: kube_image,

@@ -11,7 +11,7 @@ module Rhea
         def perform
           commands_data = data['commands']
           commands_data.each do |command_data|
-            Scale.new(command_data['expression'], command_data['process_count'], image: command_data['image']).perform
+            Scale.new(expression: command_data['expression'], process_count: command_data['process_count'], image: command_data['image']).perform
           end
         end
       end
