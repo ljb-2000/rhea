@@ -1,0 +1,22 @@
+= form_tag commands_path, method: 'POST', class: 'form-horizontal' do
+  = hidden_field_tag :redirect_to, request.fullpath
+  .form-group
+    = label_tag :image, 'Image', class: 'col-sm-3 control-label'
+    .col-sm-9
+      = text_field_tag :image, Rhea.configuration.image, class: 'form-control', style: 'width: 100%;', placeholder: Rhea.configuration.image
+  .form-group
+    = label_tag :command_type_key, 'Type', class: 'col-sm-3 control-label'
+    .col-sm-9
+      = select_tag :command_type_key, options_for_select(Rhea::CommandType.options_for_select, Rhea.configuration.default_command_type_key), class: 'form-control', style: 'width: 90px;', required: 'required'
+  .form-group
+    = label_tag :command_type_input, 'Input', class: 'col-sm-3 control-label'
+    .col-sm-9
+      = text_field_tag :command_type_input, nil, class: 'form-control', style: 'width: 100%;', required: 'required'
+  .form-group
+    = label_tag :process_count, 'Processes', class: 'col-sm-3 control-label'
+    .col-sm-9
+      = text_field_tag :process_count, 1, class: 'form-control', style: 'width: 50px;', placeholder: 1
+  .form-group
+    .col-sm-3
+    .col-sm-9
+      = submit_tag 'Create', class: 'btn btn-default'

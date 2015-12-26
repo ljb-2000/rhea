@@ -13,55 +13,7 @@
     - else
       = form_tag batch_update_commands_path, method: 'POST' do
         = hidden_field_tag :redirect_to, request.fullpath
-        %table.table.table-condensed.table-striped
-          %thead
-            %tr
-              %th
-              %th Image
-              %th Command
-              %th Processes
-              %th Desired Processes
-              %th Deployed
-              %th
-          %tbody
-            - @commands.each do |command|
-              - escaped_image_expression = CGI.escape([command.image, command.expression].join(Rhea::Command::IMAGE_EXPRESSION_SEPARATOR))
-              %tr
-                %td= check_box_tag 'batch_image_expressions[]', escaped_image_expression, false, class: 'command-checkbox'
-                %td= humanize_image(command.image)
-                %td= command.expression
-                %td= command.process_count
-                %td
-                  = text_field_tag "image_expressions_process_counts[#{escaped_image_expression}]", nil, class: 'form-control', style: 'width: 50px;'
-                %td
-                  = time_ago_in_words(command.created_at.in_time_zone(Time.zone), include_seconds: true)
-                  ago
-                %td{ style: 'white-space: nowrap;' }
-                  = link_to redeploy_commands_path(image_expression: escaped_image_expression), title: 'Redeploy', class: 'btn btn-info btn-xs btn-action' do
-                    %span.glyphicon.glyphicon-cloud-download
-                  = link_to reschedule_commands_path(image_expression: escaped_image_expression), title: 'Reschedule', class: 'btn btn-info btn-xs btn-action' do
-                    %span.glyphicon.glyphicon-fullscreen
-                  - if command.process_count == 0
-                    = link_to delete_commands_path(image_expression: escaped_image_expression), title: 'Delete', class: 'btn btn-danger btn-xs btn-action' do
-                      %span.glyphicon.glyphicon-remove
-                  - else
-                    = link_to stop_commands_path(image_expression: escaped_image_expression), title: 'Stop', class: 'btn btn-warning btn-xs btn-action' do
-                      %span.glyphicon.glyphicon-stop
-            %tr
-              %td{ colspan: 2 }
-                .batch-actions{ style: 'display: none;' }
-                  = button_tag name: 'batch_action', value: 'redeploy', title: 'Redeploy', class: 'btn btn-info btn-xs btn-action' do
-                    %span.glyphicon.glyphicon-cloud-download
-                  = button_tag name: 'batch_action', value: 'reschedule', title: 'Reschedule', class: 'btn btn-info btn-xs btn-action' do
-                    %span.glyphicon.glyphicon-fullscreen
-                  = button_tag name: 'batch_action', value: 'stop', title: 'Stop', class: 'btn btn-warning btn-xs btn-action' do
-                    %span.glyphicon.glyphicon-stop
-              %td
-              %td
-              %td
-                = button_tag 'Save', name: 'batch_action', value: 'scale', class: 'btn btn-default'
-              %td
-              %td
+        = render partial: 'rhea/commands/table', locals: { commands: @commands }
       = link_to 'Export', export_commands_path(format: 'json'), class: 'btn btn-default'
       = form_tag import_commands_path, method: 'PUT', multipart: true, style: 'display: inline-block;' do
         %span.btn.btn-default.btn-file
@@ -75,28 +27,7 @@
       .panel-heading
         %h4 New Command
       .panel-body
-        = form_tag commands_path, method: 'POST', class: 'form-horizontal' do
-          = hidden_field_tag :redirect_to, request.fullpath
-          .form-group
-            = label_tag :image, 'Image', class: 'col-sm-3 control-label'
-            .col-sm-9
-              = text_field_tag :image, Rhea.configuration.image, class: 'form-control', style: 'width: 100%;', placeholder: Rhea.configuration.image
-          .form-group
-            = label_tag :command_type_key, 'Type', class: 'col-sm-3 control-label'
-            .col-sm-9
-              = select_tag :command_type_key, options_for_select(Rhea::CommandType.options_for_select, Rhea.configuration.default_command_type_key), class: 'form-control', style: 'width: 90px;', required: 'required'
-          .form-group
-            = label_tag :command_type_input, 'Input', class: 'col-sm-3 control-label'
-            .col-sm-9
-              = text_field_tag :command_type_input, nil, class: 'form-control', style: 'width: 100%;', required: 'required'
-          .form-group
-            = label_tag :process_count, 'Processes', class: 'col-sm-3 control-label'
-            .col-sm-9
-              = text_field_tag :process_count, 1, class: 'form-control', style: 'width: 50px;', placeholder: 1
-          .form-group
-            .col-sm-3
-            .col-sm-9
-              = submit_tag 'Create', class: 'btn btn-default'
+        = render partial: 'rhea/commands/form'
 
     .panel.panel-default
       .panel-heading
