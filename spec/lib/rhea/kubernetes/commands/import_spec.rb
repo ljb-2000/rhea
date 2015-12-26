@@ -26,13 +26,13 @@ describe Rhea::Kubernetes::Commands::Import, :vcr do
       it 'creates the rcs' do
         described_class.new(data).perform
         replication_controllers = Rhea::Kubernetes::Commands::All.new.perform
-        expected_replication_controller = OpenStruct.new(
+        expected_attributes = {
           expression: command_expression,
           image: kube_image,
           process_count: process_count
-        )
+        }
         expect(replication_controllers.length).to eq(1)
-        expect(replication_controllers[0].to_h).to include(expected_replication_controller.to_h)
+        expect(replication_controllers[0].attributes).to include(expected_attributes)
       end
     end
   end

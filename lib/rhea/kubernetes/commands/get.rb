@@ -11,7 +11,7 @@ module Rhea
         def perform
           key = command_expression_to_key(command_expression)
           controller = api.get_replication_controllers(label_selector: "name=#{key}").first
-          normalize_controller(controller)
+          controller_to_command(controller)
         end
       end
     end

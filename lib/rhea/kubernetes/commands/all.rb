@@ -5,7 +5,7 @@ module Rhea
         def perform
           controllers = api.get_replication_controllers
           commands = controllers.map do |controller|
-            normalize_controller(controller)
+            controller_to_command(controller)
           end.compact
           commands = commands.sort_by(&:expression)
           commands

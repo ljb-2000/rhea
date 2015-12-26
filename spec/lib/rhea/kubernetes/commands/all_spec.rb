@@ -16,13 +16,13 @@ describe Rhea::Kubernetes::Commands::All, :vcr do
 
       it 'returns the rc' do
         replication_controllers = described_class.new.perform
-        expected_replication_controller = OpenStruct.new(
+        expected_attributes = {
           expression: command_expression,
           image: kube_image,
           process_count: process_count
-        )
+        }
         expect(replication_controllers.length).to eq(1)
-        expect(replication_controllers[0].to_h).to include(expected_replication_controller.to_h)
+        expect(replication_controllers[0].attributes).to include(expected_attributes)
       end
     end
   end

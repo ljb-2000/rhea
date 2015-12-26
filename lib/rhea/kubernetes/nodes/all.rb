@@ -26,7 +26,7 @@ module Rhea
             containers = pod.spec.containers
             containers.each do |container|
               image = container.image
-              command = OpenStruct.new(
+              command = Command.new(
                 expression: command_expression,
                 image: image
               )

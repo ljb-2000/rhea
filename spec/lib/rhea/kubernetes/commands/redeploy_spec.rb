@@ -17,12 +17,13 @@ describe Rhea::Kubernetes::Commands::Redeploy, :vcr do
       it 'redeploys the rc' do
         described_class.new(command_expression).perform
         replication_controller = Rhea::Kubernetes::Commands::Get.new(command_expression).perform
-        expected_replication_controller = OpenStruct.new(
+
+        expected_attributes = {
           expression: command_expression,
           image: kube_image,
           process_count: process_count
-        )
-        expect(replication_controller.to_h).to include(expected_replication_controller.to_h)
+        }
+        expect(replication_controller.attributes).to include(expected_attributes)
 
         # One POST for the initial creation, and a second POST for the recreation
         expect(WebMock).to have_requested(:post, "#{kube_authed_api_url}replicationcontrollers").twice

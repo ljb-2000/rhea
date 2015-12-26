@@ -17,12 +17,12 @@ describe Rhea::Kubernetes::Commands::Reschedule, :vcr do
       it 'reschedules the rc' do
         described_class.new(command_expression).perform
         replication_controller = Rhea::Kubernetes::Commands::Get.new(command_expression).perform
-        expected_replication_controller = OpenStruct.new(
+        expected_attributes = {
           expression: command_expression,
           image: kube_image,
           process_count: process_count
-        )
-        expect(replication_controller.to_h).to include(expected_replication_controller.to_h)
+        }
+        expect(replication_controller.attributes).to include(expected_attributes)
 
         expect(WebMock).to have_requested(:post, "#{kube_authed_api_url}replicationcontrollers")
         expect(WebMock).to have_requested(:put, "#{kube_authed_api_url}replicationcontrollers/#{kube_replication_controller_name}").twice
