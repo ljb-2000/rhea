@@ -19,8 +19,9 @@
         %td
           = text_field_tag "image_expressions_process_counts[#{escaped_image_expression}]", nil, class: 'form-control', style: 'width: 50px;'
         %td
-          = time_ago_in_words(command.created_at.in_time_zone(Time.zone), include_seconds: true)
-          ago
+          %small.text-muted
+            = time_ago_in_words(command.created_at.in_time_zone(Time.zone), include_seconds: true)
+            ago
         %td{ style: 'white-space: nowrap;' }
           = link_to redeploy_commands_path(image_expression: escaped_image_expression), title: 'Redeploy', class: 'btn btn-info btn-xs btn-action' do
             %span.glyphicon.glyphicon-cloud-download
