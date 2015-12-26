@@ -3,6 +3,7 @@ module Rhea
     attr_accessor :expression, :image, :process_count, :created_at
 
     KEY_PREFIX = 'rhea-'
+    IMAGE_EXPRESSION_SEPARATOR = '____'
 
     def initialize(expression:, image: nil, process_count: nil, created_at: nil)
       self.expression = expression
