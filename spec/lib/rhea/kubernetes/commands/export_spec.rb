@@ -15,7 +15,7 @@ describe Rhea::Kubernetes::Commands::Export, :vcr do
       end
 
       it 'returns the data' do
-        data = Rhea::Kubernetes::Commands::Export.new.perform
+        data = described_class.new.perform
         expect(data[:version]).to eq(Rhea::VERSION)
         expect(data[:created_at]).to be_a(Time)
         expect(data[:commands]).to eq([

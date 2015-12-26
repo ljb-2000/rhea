@@ -15,7 +15,7 @@ describe Rhea::Kubernetes::Commands::Redeploy, :vcr do
       end
 
       it 'redeploys the rc' do
-        Rhea::Kubernetes::Commands::Redeploy.new(command_expression).perform
+        described_class.new(command_expression).perform
         replication_controller = Rhea::Kubernetes::Commands::Get.new(command_expression).perform
         expected_replication_controller = OpenStruct.new(
           expression: command_expression,

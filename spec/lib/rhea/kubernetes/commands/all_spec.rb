@@ -15,7 +15,7 @@ describe Rhea::Kubernetes::Commands::All, :vcr do
       end
 
       it 'returns the rc' do
-        replication_controllers = Rhea::Kubernetes::Commands::All.new.perform
+        replication_controllers = described_class.new.perform
         expected_replication_controller = OpenStruct.new(
           expression: command_expression,
           image: kube_image,

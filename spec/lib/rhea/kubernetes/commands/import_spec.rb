@@ -24,7 +24,7 @@ describe Rhea::Kubernetes::Commands::Import, :vcr do
       end
 
       it 'creates the rcs' do
-        Rhea::Kubernetes::Commands::Import.new(data).perform
+        described_class.new(data).perform
         replication_controllers = Rhea::Kubernetes::Commands::All.new.perform
         expected_replication_controller = OpenStruct.new(
           expression: command_expression,
