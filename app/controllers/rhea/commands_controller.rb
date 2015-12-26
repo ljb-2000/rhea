@@ -13,16 +13,18 @@ module Rhea
     def create
       command_type_key = params[:command_type_key].presence
       command_type_input = params[:command_type_input].presence
-      process_count = params[:process_count].presence || 1
+      process_count = params[:process_count].presence.try(:to_i) || 1
+      image = params[:image].presence
 
       redirect_to :back, flash: { error: 'Blank command_type_key' } and return if command_type_key.blank?
       redirect_to :back, flash: { error: 'Blank command_type_input' } and return if command_type_input.blank?
       redirect_to :back, flash: { error: 'Blank process_count' } and return if process_count.blank?
+      redirect_to :back, flash: { error: 'Blank image' } and return if image.blank?
 
       command_type = Rhea::CommandType.find(command_type_key)
       command_expression = command_type.input_to_command_expression(command_type_input)
 
-      Rhea::Kubernetes::Commands::Scale.new(expression: command_expression, process_count: process_count.to_i).perform
+      Rhea::Kubernetes::Commands::Scale.new(expression: command_expression, image: image, process_count: process_count).perform
       wait_for_updates_to_persist
       redirect_to params[:redirect_to], notice: 'Command created!'
     end
