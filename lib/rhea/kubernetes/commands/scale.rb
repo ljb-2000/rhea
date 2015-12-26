@@ -2,11 +2,12 @@ module Rhea
   module Kubernetes
     module Commands
       class Scale < Base
-        attr_accessor :command_expression, :process_count
+        attr_accessor :command_expression, :process_count, :image
 
-        def initialize(command_expression, process_count)
+        def initialize(command_expression, process_count, image: nil)
           self.command_expression = command_expression
           self.process_count = process_count
+          self.image = image || Rhea.configuration.image
         end
 
         def perform
@@ -60,7 +61,7 @@ module Rhea
                 'containers' => [
                   {
                     'name' => key,
-                    'image' => Rhea.configuration.image,
+                    'image' => image,
                     'env' => formatted_env_vars,
                     'command' => raw_command_expression.split(/\s+/)
                   }

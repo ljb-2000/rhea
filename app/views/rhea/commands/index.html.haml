@@ -62,6 +62,13 @@
                 = button_tag 'Save', name: 'batch_action', value: 'scale', class: 'btn btn-default'
               %td
               %td
+      = link_to 'Export', export_commands_path(format: 'json'), class: 'btn btn-default'
+      = form_tag import_commands_path, method: 'PUT', multipart: true, style: 'display: inline-block;' do
+        %span.btn.btn-default.btn-file
+          Import
+          = file_field_tag :data, accept: 'application/json', onchange: "$(this).closest('form').submit();"
+      %br
+      %br
 
   .col-md-4
     .panel.panel-default

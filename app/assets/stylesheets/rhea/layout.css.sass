@@ -1,12 +1,31 @@
 h1, h2, h3, h4, h5, h6
   margin-top: 0
 
-.btn-action
-  margin-left: 5px
-
 .batch-actions .btn-action
   margin-left: 0
   margin-right: 5px
+
+.btn-action
+  margin-left: 5px
+
+.btn-file
+  position: relative
+  overflow: hidden
+
+.btn-file input[type=file]
+  position: absolute
+  top: 0
+  right: 0
+  min-width: 100%
+  min-height: 100%
+  font-size: 100px
+  text-align: right
+  filter: alpha(opacity=0)
+  opacity: 0
+  outline: none
+  background: white
+  cursor: inherit
+  display: block
 
 .form-horizontal .control-label
   padding-right: 0

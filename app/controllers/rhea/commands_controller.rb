@@ -50,6 +50,27 @@ module Rhea
       redirect_to :back
     end
 
+    def export
+      data = Rhea::Kubernetes::Commands::Export.new.perform
+      respond_to do |format|
+        format.json { send_data data.to_json, type: :json, disposition: 'attachment' }
+      end
+    end
+
+    def import
+      data = ActiveSupport::JSON.decode(params[:data].read)
+      commands = data['commands']
+      if commands.nil?
+        flash[:alert] = 'Invalid file'
+        redirect_to :back
+        return
+      end
+
+      Rhea::Kubernetes::Commands::Import.new(data).perform
+      flash[:notice] = "Imported #{commands.length} commands!"
+      redirect_to :back
+    end
+
     def redeploy
       command_expression = params[:command_expression]
       command_expression = CGI.unescape(command_expression)
