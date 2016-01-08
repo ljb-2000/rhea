@@ -12,7 +12,7 @@
 
   %body
     .navbar.navbar-default.navbar-static-top
-      .container
+      .container-fluid
         %button.navbar-toggle(type="button" data-toggle="collapse" data-target=".navbar-responsive-collapse")
         = link_to app_name, rhea_path, class: 'navbar-brand'
         .navbar-collapse.collapse.navbar-responsive-collapse
@@ -27,7 +27,7 @@
               = link_to 'System Services', system_services_path
             %li
               = link_to 'Kubernetes UI', Rhea::Kubernetes::SystemServices.service_names_urls['Kubernetes UI'], target: '_blank'
-    .container
+    .container-fluid
       .row
         .col-lg-12
           = bootstrap_flash
