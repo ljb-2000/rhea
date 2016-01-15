@@ -75,7 +75,7 @@ module Rhea
         end
 
         def parse_command_expression
-          match = command.expression.match(/((?:[A-Z]+=[^\s]+\s+)+)?(.+)/)
+          match = command.expression.match(/((?:[A-Z]+=[^\s]+\s+)+)?(.*)/)
           env_vars_string = match[1]
           raw_command_expression = match[2]
           env_vars = {}
