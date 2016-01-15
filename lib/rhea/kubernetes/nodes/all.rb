@@ -11,7 +11,7 @@ module Rhea
             next if command_expression.nil?
             hostname = pod.spec.nodeName
             hostnames_nodes[hostname] ||= {}
-            hostnames_nodes[hostname][:image] = pod.status.containerStatuses_as_a_hash[0]['image']
+            hostnames_nodes[hostname][:image] = pod[:table][:spec][:containers][0]['image']
 
             started_at = pod.status.startTime
             if started_at
