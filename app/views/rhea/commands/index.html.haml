@@ -37,4 +37,15 @@
 :javascript
   var checkboxes = $('.command-checkbox');
   var batchActions = $('.batch-actions');
-  checkboxes.on('click', function() { batchActions.toggle(checkboxes.filter(':checked').length > 0); return true; });
+
+  var toggleBatchActions = function() {
+    batchActions.toggle(checkboxes.filter(':checked').length > 0);
+    return true;
+  }
+
+  checkboxes.on('click', toggleBatchActions);
+
+  $('#check-all').change(function(){
+    $(".command-checkbox").prop('checked', $(this).prop("checked"));
+    toggleBatchActions()
+  })
