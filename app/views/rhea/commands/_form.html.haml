@@ -3,7 +3,7 @@
   .form-group
     = label_tag :image, 'Image', class: 'col-sm-3 control-label'
     .col-sm-9
-      = text_field_tag :image, Rhea.configuration.image, class: 'form-control', style: 'width: 100%;', placeholder: Rhea.configuration.image
+      = text_field_tag :image, Rhea.configuration.default_image, class: 'form-control', style: 'width: 100%;', placeholder: Rhea.configuration.default_image
   .form-group
     = label_tag :command_type_key, 'Type', class: 'col-sm-3 control-label'
     .col-sm-9

@@ -23,7 +23,7 @@ module KubernetesSpecHelper
         },
         url: "https://#{kube_api_host}/api/"
       }
-      config.image = kube_image
+      config.default_image = kube_image
     end
   end
 

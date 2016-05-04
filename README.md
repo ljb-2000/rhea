@@ -32,7 +32,7 @@ Rhea.configure do |config|
     },
     url: ENV['KUBERNETES_URL']
   }
-  config.image = ENV['KUBERNETES_IMAGE']
+  config.default_image = ENV['KUBERNETES_DEFAULT_IMAGE']
 end
 ```
 

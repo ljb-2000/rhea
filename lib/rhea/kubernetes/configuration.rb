@@ -1,6 +1,6 @@
 module Rhea
   class Configuration
-    attr_accessor :command_types, :default_command_type_key, :env_vars, :image, :kube_api
+    attr_accessor :command_types, :default_command_type_key, :default_image, :env_vars, :kube_api
 
     def initialize
       self.command_types = [
@@ -21,8 +21,8 @@ module Rhea
         }
       ]
       self.default_command_type_key = 'default'
+      self.default_image = nil
       self.env_vars = {}
-      self.image = nil
       self.kube_api = {}
     end
   end

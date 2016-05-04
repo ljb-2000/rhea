@@ -7,7 +7,7 @@ module Rhea
 
     def initialize(expression:, image: nil, process_count: nil, created_at: nil)
       self.expression = expression
-      self.image = image || Rhea.configuration.image
+      self.image = image || Rhea.configuration.default_image
       self.process_count = process_count
       self.created_at = created_at
     end
