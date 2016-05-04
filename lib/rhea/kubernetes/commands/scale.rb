@@ -28,6 +28,13 @@ module Rhea
           env_vars = parsed_command_expression[:env_vars]
           formatted_env_vars = format_env_vars(env_vars)
 
+          container_config = {
+            'name' => command.key,
+            'image' => command.image,
+            'env' => formatted_env_vars,
+            'command' => raw_command_expression.split(/\s+/)
+          }.merge(Rhea.configuration.container_options)
+
           controller = Kubeclient::ReplicationController.new
           controller.metadata = {
             'name' => command.key,
@@ -54,17 +61,11 @@ module Rhea
                 }
               },
               'spec' => {
-                'containers' => [
-                  {
-                    'name' => command.key,
-                    'image' => command.image,
-                    'env' => formatted_env_vars,
-                    'command' => raw_command_expression.split(/\s+/)
-                  }
-                ]
+                'containers' => [container_config]
               }
             }
           }
+
           api.create_replication_controller(controller)
         end
 
