@@ -53,7 +53,7 @@ module Rhea
     def export
       data = Rhea::Kubernetes::Commands::Export.new.perform
       respond_to do |format|
-        format.json { send_data data.to_json, type: :json, disposition: 'attachment' }
+        format.json { send_data data.to_json, type: :json, disposition: 'attachment', filename: 'rhea.json' }
       end
     end
 
