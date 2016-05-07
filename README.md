@@ -1,5 +1,5 @@
-Rhea
-=====
+<h1><img src="docs/logo.png?raw=true" width="27" /> Rhea</h1>
+
 A web UI for managing a Kubernetes cluster
 
 Overview
@@ -10,8 +10,17 @@ Rhea is a web UI for managing a Kubernetes cluster. It makes it very easy to:
 * Create and manage replication controllers that run arbitrary commands
 * Perform actions on multiple replication controllers
 * Export/import the state of the cluster's replication controllers
-* View pods' statuses on all nodes
-* View the cluster's events
+* Monitor pods' statuses on all nodes
+* Monitor the cluster's events
+
+Create and manage replication controllers that run arbitrary commands:
+
+[<img src="docs/commands.gif?raw=true" width="900" />](docs/commands.gif?raw=true)
+
+Monitor the nodes' pods and the cluster's events:
+
+[<img src="docs/nodes.png?raw=true" width="440" />](docs/nodes.png?raw=true)
+[<img src="docs/events.png?raw=true" width="440" />](docs/events.png?raw=true)
 
 Installation
 ------------
