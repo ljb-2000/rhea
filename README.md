@@ -63,8 +63,6 @@ Configuration
 
 See [Installation](#installation) for basic configuration.
 
-### Options
-
 #### kube_api
 
 The API options. These are simply passed to [kubeclient](https://github.com/abonas/kubeclient), so anything that's valid in `kubeclient` is valid here. Here's an example:
