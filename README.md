@@ -88,7 +88,7 @@ config.command_types = [
   {
     key: 'sidekiq',
     name: 'Sidekiq',
-    format: 'sidekiq $INPUT'
+    format: 'sidekiq -q $INPUT'
   },
   {
     key: 'resque',
@@ -101,6 +101,25 @@ config.command_types = [
     format: 'worker.go -q $INPUT'
   }
 ]
+```
+
+#### container_options
+
+By default, each pod has a single, minimally-configured container. You can easily configure additional container options, which will be merged into the pod's `spec.template.spec.containers[0]`.
+
+```ruby
+config.container_options = {
+  'resources' => {
+    'requests' => {
+      'memory' => '256Mi',
+      'cpu' => '250m'
+    },
+    'limits' => {
+      'memory' => '512Mi',
+      'cpu' => '1000m'
+    }
+  }
+}
 ```
 
 #### default_command_type_key
@@ -117,6 +136,16 @@ This will be used to set the default image when creating new commands.
 
 ```ruby
 config.default_image = 'docker.registry.com/myworker:latest'
+```
+
+#### env_vars
+
+This will be used to set custom environment variables in pods scheduled by Rhea.
+
+```ruby
+config.env_vars = {
+  'FOO' => 'bar'
+}
 ```
 
 Testing
