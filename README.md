@@ -13,6 +13,8 @@ Rhea is a web UI for managing a Kubernetes cluster. It makes it very easy to:
 * Monitor pods' statuses on all nodes
 * Monitor the cluster's events
 
+---
+
 Create and manage replication controllers that run arbitrary commands:
 
 [<img src="docs/commands.gif?raw=true" width="900" />](docs/commands.gif?raw=true)
