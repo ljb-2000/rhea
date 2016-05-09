@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.version       = Rhea::VERSION
   s.license       = 'MIT'
 
-  s.add_dependency 'kubeclient', '~> 0.3.0'
+  s.add_dependency 'kubeclient', '~> 1.1.3'
   s.add_dependency 'haml', '~> 4.0'
   s.add_dependency 'kaminari', '~> 0.16'
   s.add_dependency 'sass-rails', '~> 5.0'
