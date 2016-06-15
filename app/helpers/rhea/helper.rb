@@ -38,5 +38,10 @@ module Rhea
       end
       flash_messages.join("\n").html_safe
     end
+
+    IMAGE_ID_REGEX = /^docker:\/\/sha256:([a-z0-9]+)/.freeze
+    def humanize_image_id(image_id)
+      IMAGE_ID_REGEX.match(image_id).try(:[], 1).try(:first, 12)
+    end
   end
 end

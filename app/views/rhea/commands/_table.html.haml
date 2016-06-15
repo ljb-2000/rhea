@@ -14,7 +14,11 @@
       - escaped_image_expression = CGI.escape([command.image, command.expression].join(Rhea::Command::IMAGE_EXPRESSION_SEPARATOR))
       %tr
         %td= check_box_tag 'batch_image_expressions[]', escaped_image_expression, false, class: 'command-checkbox'
-        %td= humanize_image(command.image)
+        %td
+          %div= humanize_image(command.image)
+          %div
+            - command.image_ids.each do |image_id|
+              %small.text-muted= humanize_image_id(image_id)
         %td= command.expression
         %td= command.process_count
         %td

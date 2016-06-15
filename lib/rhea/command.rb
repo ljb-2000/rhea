@@ -31,5 +31,18 @@ module Rhea
       key.gsub!(/\-+$/, '')
       key
     end
+
+    def image_ids
+      pods = Rhea::Kubernetes::Pods::Get.new(attributes).perform
+      return [] if pods.empty?
+      ids = pods.map do |pod|
+        pod.status.containerStatuses.map do |container_status|
+          container_status.imageID
+        end
+      end
+      ids.flatten!
+      ids.uniq!
+      ids
+    end
   end
 end
