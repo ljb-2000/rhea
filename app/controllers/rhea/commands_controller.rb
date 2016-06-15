@@ -4,7 +4,6 @@ module Rhea
       @commands = Rhea::Kubernetes::Commands::All.new.perform
       @default_image = Rhea.configuration.default_image
       @images = (@commands.map(&:image) + [@default_image]).uniq.sort
-      params[:image] ||= @default_image
       if params[:image].present?
         @commands = @commands.select { |command| command.image == params[:image] }
       end

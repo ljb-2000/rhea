@@ -9,7 +9,12 @@
     .col-sm-9
       = select_tag :command_type_key, options_for_select(Rhea::CommandType.options_for_select, Rhea.configuration.default_command_type_key), class: 'form-control', style: 'width: 90px;', required: 'required'
   .form-group
-    = label_tag :command_type_input, 'Input', class: 'col-sm-3 control-label'
+    = label_tag :command_syntax, 'Command', class: 'col-sm-3 control-label', style: 'font-weight: normal;'
+    .col-sm-9
+      %pre.command-syntax{style: 'font-size: 12px;'}
+        = Rhea::CommandType.find(Rhea.configuration.default_command_type_key).displayed_format
+  .form-group
+    = label_tag :command_type_input, '$input', class: 'col-sm-3 control-label'
     .col-sm-9
       = text_field_tag :command_type_input, nil, class: 'form-control', style: 'width: 100%;'
   .form-group
@@ -19,4 +24,4 @@
   .form-group
     .col-sm-3
     .col-sm-9
-      = submit_tag 'Create', class: 'btn btn-default'
+      = submit_tag 'Create', class: 'btn btn-success'

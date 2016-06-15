@@ -4,7 +4,6 @@
       %th Time
       %th
       %th Host
-      %th Message
       %th Type
       %th Resource Type
       %th Resource ID
@@ -16,9 +15,10 @@
           = time_ago_in_words(event.created_at.in_time_zone(Time.zone), include_seconds: true)
           ago
         %td= event.hostname
-        %td= simple_format(event.message)
         %td= event.type
         %td= event.resource_type
         %td= event.resource_id
+      %tr
+        %td{colspan: 6}= simple_format(event.message)
 
 = paginate @events

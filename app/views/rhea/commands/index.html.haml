@@ -1,25 +1,23 @@
 .row
   .col-md-8
-    .pull-right
+    .pull-left
       = form_tag commands_path, method: 'GET', class: 'form-inline' do
         .form-group
-          = label_tag :image, 'Image:', style: 'margin-right: 5px; font-size: 12px; font-weight: normal;'
+          = label_tag :image, 'Image', style: 'margin-right: 5px; font-size: 13px;'
           - image_options = [['All', nil]] + @images.map { |image| [humanize_image(image), image] }
-          = select_tag :image, options_for_select(image_options, params[:image].presence), class: 'form-control input-sm', onchange: "$(this).closest('form').submit();"
-    %h3 Commands
-    - if @commands.blank?
-      %p No commands found.
-    - else
+          = select_tag :image, options_for_select(image_options, params[:image].presence), class: 'form-control', onchange: "$(this).closest('form').submit();"
+    .pull-right
+      = form_tag import_commands_path, method: 'PUT', multipart: true, style: 'display: inline-block;' do
+        %span.btn.btn-default.btn-file
+          Import
+          = file_field_tag :data, accept: 'application/json', onchange: "$(this).closest('form').submit();"
+      = link_to 'Export', export_commands_path(format: 'json'), class: 'btn btn-default'
+    - if @commands.present?
       = form_tag batch_update_commands_path, method: 'POST' do
         = hidden_field_tag :redirect_to, request.fullpath
         = render partial: 'rhea/commands/table', locals: { commands: @commands }
-      = link_to 'Export', export_commands_path(format: 'json'), class: 'btn btn-default'
-    = form_tag import_commands_path, method: 'PUT', multipart: true, style: 'display: inline-block;' do
-      %span.btn.btn-default.btn-file
-        Import
-        = file_field_tag :data, accept: 'application/json', onchange: "$(this).closest('form').submit();"
-    %br
-    %br
+    - else
+      %p No commands found.
 
   .col-md-4
     .panel.panel-default
@@ -28,12 +26,6 @@
       .panel-body
         = render partial: 'rhea/commands/form'
 
-    .panel.panel-default
-      .panel-heading
-        %h4 Command Types
-      .panel-body
-        = render partial: 'rhea/command_types/list'
-
 :javascript
   var checkboxes = $('.command-checkbox');
   var batchActions = $('.batch-actions');
@@ -41,11 +33,18 @@
   var toggleBatchActions = function() {
     batchActions.toggle(checkboxes.filter(':checked').length > 0);
     return true;
-  }
+  };
+
+  var updateCommandSyntax = function() {
+    var syntax = this.selectedOptions[0].dataset.syntax;
+    $('.command-syntax').text(syntax);
+  };
 
   checkboxes.on('click', toggleBatchActions);
 
   $('#check-all').change(function(){
     $(".command-checkbox").prop('checked', $(this).prop("checked"));
     toggleBatchActions()
-  })
+  });
+
+  $('#command_type_key').on('change', updateCommandSyntax);
