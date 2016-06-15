@@ -24,6 +24,34 @@ Monitor the nodes' pods and the cluster's events:
 [<img src="docs/nodes.png?raw=true" width="440" />](docs/nodes.png?raw=true)
 [<img src="docs/events.png?raw=true" width="440" />](docs/events.png?raw=true)
 
+Quick start
+-----------
+
+### Docker image
+
+```sh
+docker build -t rhea-rails .
+# Set KUBE_API_URL as appropriate
+docker run -it -p 3000:3000 -e KUBE_API_URL="http://localhost:8080/api" rhea-rails
+# If you're running Kubernetes within Docker you may want to add
+# --net=host to the docker run commands.s
+```
+
+### Sample Rails app:
+
+```sh
+cd examples/rhea-rails
+bundle install
+# Set KUBE_API_URL as appropriate
+rails server KUBE_API_URL=http://localhost:8080/api/
+# Visit http://localhost:3000
+```
+
+For development please change this line in the sample app's `Gemfile`:
+`gem 'rhea', git: 'https://github.com/entelo/rhea.git'`
+to
+`gem 'rhea', path: '../../'`
+
 Installation
 ------------
 
