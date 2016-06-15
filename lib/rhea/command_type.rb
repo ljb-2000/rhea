@@ -29,7 +29,9 @@ module Rhea
     end
 
     def self.options_for_select
-      all.map { |command_type| [command_type.name, command_type.key] }
+      all.map do |command_type|
+        [command_type.name, command_type.key, :'data-syntax' => command_type.displayed_format]
+      end
     end
   end
 end
