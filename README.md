@@ -27,30 +27,13 @@ Monitor the nodes' pods and the cluster's events:
 Quick start
 -----------
 
-### Docker image
+The included Dockerfile builds a container running a Rails app with Rhea.
 
-```sh
-docker build -t rhea-rails .
-# Set KUBE_API_URL as appropriate
-docker run -it -p 3000:3000 -e KUBE_API_URL="http://localhost:8080/api" rhea-rails
-# If you're running Kubernetes within Docker you may want to add
-# --net=host to the docker run commands.s
-```
-
-### Sample Rails app:
-
-```sh
-cd examples/rhea-rails
-bundle install
-# Set KUBE_API_URL as appropriate
-rails server KUBE_API_URL=http://localhost:8080/api/
-# Visit http://localhost:3000
-```
-
-For development please change this line in the sample app's `Gemfile`:
-`gem 'rhea', git: 'https://github.com/entelo/rhea.git'`
-to
-`gem 'rhea', path: '../../'`
+1. Configure Rhea for your kube cluster with `rhea.yml` in the project path.
+  - Sample config: `cp rhea.yml.example rhea.yml`
+  - Config guide: See below and [kubeclient](https://github.com/abonas/kubeclient)
+2. Build the container: `docker build -it rhea-rails .`
+3. Run it: `docker run --rm -p 3000:3000 rhea-rails`
 
 Installation
 ------------
@@ -184,6 +167,22 @@ config.env_vars = {
   'FOO' => 'bar'
 }
 ```
+
+Development
+---
+
+Use the sample Rails app with Rhea.
+
+1. `cd examples/rhea-rails`
+2. Update the rhea Gem in the sample app's `Gemfile`:
+  - `gem 'rhea', git: 'https://github.com/entelo/rhea.git'`
+to
+  - `gem 'rhea', path: '../../'`
+
+3. Modify `config/rhea.yml` for your needs
+4. `bundle install`
+5. `rails server KUBE_API_URL=http://localhost:8080/api/`
+6. Visit http://localhost:3000
 
 Testing
 -------
