@@ -24,6 +24,17 @@ Monitor the nodes' pods and the cluster's events:
 [<img src="docs/nodes.png?raw=true" width="440" />](docs/nodes.png?raw=true)
 [<img src="docs/events.png?raw=true" width="440" />](docs/events.png?raw=true)
 
+Quick start
+-----------
+
+The included Dockerfile builds a container running a Rails app with Rhea.
+
+1. Configure Rhea for your kube cluster with `rhea.yml` in the project path.
+  - Sample config: `cp rhea.yml.example rhea.yml`
+  - Config guide: See below and [kubeclient](https://github.com/abonas/kubeclient)
+2. Build the container: `docker build -it rhea-rails .`
+3. Run it: `docker run --rm -p 3000:3000 rhea-rails`
+
 Installation
 ------------
 
@@ -156,6 +167,22 @@ config.env_vars = {
   'FOO' => 'bar'
 }
 ```
+
+Development
+---
+
+Use the sample Rails app with Rhea.
+
+1. `cd examples/rhea-rails`
+2. Update the rhea Gem in the sample app's `Gemfile`:
+  - `gem 'rhea', git: 'https://github.com/entelo/rhea.git'`
+to
+  - `gem 'rhea', path: '../../'`
+
+3. Modify `config/rhea.yml` for your needs
+4. `bundle install`
+5. `rails server KUBE_API_URL=http://localhost:8080/api/`
+6. Visit http://localhost:3000
 
 Testing
 -------

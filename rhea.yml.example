@@ -1,0 +1,9 @@
+# This file is loaded by /config/initializers/rhea.rb and configures Rhea.
+# Config options here are passed to kubeclient.
+# See: https://github.com/abonas/kubeclient
+
+kube_api:
+  # NOTE: The options key is required; don't delete it
+  options: {}
+  url: "http://localhost:8080/api"
+default_image: "hello-world:latest"
