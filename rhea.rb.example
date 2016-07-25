@@ -1,0 +1,16 @@
+require 'rhea'
+
+Rhea.configure do |config|
+  config.kube_api = {
+    options: {
+      ssl_options: {
+        client_key: OpenSSL::PKey::RSA.new(Rails.root.join('config', 'credentials', 'apiserver.key').read),
+        client_cert: OpenSSL::X509::Certificate.new(Rails.root.join('config', 'credentials', 'apiserver.crt').read),
+        ca_file: Rails.root.join('config', 'credentials', 'ca.crt').to_s,
+        verify_ssl: OpenSSL::SSL::VERIFY_PEER
+      }
+    },
+    url: 'https://kubernetes.example.com/api/'
+  }
+  config.default_image = 'docker.registry.com/myworker:latest'
+end

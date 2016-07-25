@@ -1,7 +1,9 @@
 .DS_Store
-Gemfile.lock
 *.gem
-log/*.log
 .bundle/
+credentials/*
+!credentials/.gitkeep
+Gemfile.lock
+log/*.log
 pkg/
-rhea.yml
+rhea.rb

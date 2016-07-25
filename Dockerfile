@@ -17,7 +17,8 @@ RUN apk --update add --virtual build-dependencies build-base git \
 
 
 ADD examples/rhea-rails/. /app
-ADD rhea.yml /app/config/
+ADD credentials/. /app/config/credentials/
+ADD rhea.rb /app/config/initializers/
 RUN chown -R nobody:nogroup /app
 USER nobody
 
