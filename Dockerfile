@@ -10,8 +10,7 @@ ADD examples/rhea-rails/Gemfile.lock /app/
 
 RUN apk --update add --virtual build-dependencies build-base git \
     libc-dev linux-headers ruby-dev openssl-dev && \
-    gem install bundler && \
-    cd /app; bundle config build.nokogiri --use-system-libraries && \
+    gem install --no-rdoc --no-ri bundler && \
     cd /app; bundle install --deployment --full-index --jobs 4 && \
     apk del build-dependencies
 
