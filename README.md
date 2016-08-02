@@ -3,7 +3,7 @@
 A web UI for managing a Kubernetes cluster
 
 Overview
---------
+---
 
 Rhea is a web UI for managing a Kubernetes cluster. It makes it very easy to:
 
@@ -24,77 +24,76 @@ Monitor the nodes' pods and the cluster's events:
 [<img src="docs/nodes.png?raw=true" width="440" />](docs/nodes.png?raw=true)
 [<img src="docs/events.png?raw=true" width="440" />](docs/events.png?raw=true)
 
-Quick start
------------
+Installation
+---
 
 The included Dockerfile builds a container running a Rails app with Rhea.
 
-1. Configure Rhea for your kube cluster with `rhea.yml` in the project path.
-  - Sample config: `cp rhea.yml.example rhea.yml`
-  - Config guide: See below and [kubeclient](https://github.com/abonas/kubeclient)
-2. Build the container: `docker build -it rhea-rails .`
-3. Run it: `docker run --rm -p 3000:3000 rhea-rails`
+1. Configure Rhea by copying and modifying `rhea.rb.example`:
+  * `cp rhea.rb.example rhea.rb`
+  * Modify `rhea.rb` (see [Configuration](#configuration))
+2. Build the container: `docker build -it rhea .`
+3. Run it: `docker run --rm -p 3000:3000 rhea`
 
-Installation
-------------
 
-Rhea is a Rails engine. To install it, include it in your `Gemfile`:
 
-```ruby
-gem 'rhea'
-```
+Configuration
+---
 
-Mount it in `routes.rb`:
+Rhea is configured in `rhea.rb`. The only required configuration option is `kube_api`, which configures Rhea to talk to your Kubernetes API.
 
-```ruby
-mount Rhea::Engine => '/rhea'
-```
+### kube_api
 
-And configure it in `config/initializers/rhea.rb`:
+These options are passed through to [kubeclient](https://github.com/abonas/kubeclient), so anything that's valid in `kubeclient` is valid here.
+
+#### No authentication
 
 ```ruby
+# rhea.rb
 require 'rhea'
 
 Rhea.configure do |config|
   config.kube_api = {
-    options: {
-      ssl_options: {
-        client_key: OpenSSL::PKey::RSA.new(Rails.root.join(ENV['KEYS_DIRECTORY'], 'apiserver-key.pem').read),
-        client_cert: OpenSSL::X509::Certificate.new(Rails.root.join(ENV['KEYS_DIRECTORY'], 'apiserver.pem').read),
-        ca_file: Rails.root.join(ENV['KEYS_DIRECTORY'], 'ca.pem').to_s,
-        verify_ssl: OpenSSL::SSL::VERIFY_PEER
-      }
-    },
-    url: 'https://kubernetes.example.com/api/'
+    url: 'https://kubernetes.example.com/api/',
+    options: {}
   }
-  config.default_image = 'docker.registry.com/myworker:latest'
 end
 ```
 
-Configuration
--------------
+#### Client certificate authentication
 
-See [Installation](#installation) for basic configuration.
+Create a `credentials` directory in the root of this directory and copy the following files into it:
 
-#### kube_api
-
-The API options. These are simply passed to [kubeclient](https://github.com/abonas/kubeclient), so anything that's valid in `kubeclient` is valid here. Here's an example:
-
-```ruby
-config.kube_api = {
-  options: {
-    ssl_options: {
-      client_key: OpenSSL::PKey::RSA.new(Rails.root.join(ENV['KEYS_DIRECTORY'], 'apiserver-key.pem').read),
-      client_cert: OpenSSL::X509::Certificate.new(Rails.root.join(ENV['KEYS_DIRECTORY'], 'apiserver.pem').read),
-      ca_file: Rails.root.join(ENV['KEYS_DIRECTORY'], 'ca.pem').to_s,
-      verify_ssl: OpenSSL::SSL::VERIFY_PEER
-    }
-  },
-  url: 'https://kubernetes.example.com/api/'
-}
+```bash
+credentials/apiserver.crt
+credentials/apiserver.key
+credentials/ca.crt
 ```
 
-#### command_types
+Then configure `rhea.rb` to use them:
+
+```ruby
+# rhea.rb
+require 'rhea'
+
+Rhea.configure do |config|
+  config.kube_api = {
+    url: 'https://kubernetes.example.com/api/',
+    options: {
+      ssl_options: {
+        client_key: OpenSSL::PKey::RSA.new(Rails.root.join('config/credentials/apiserver.key').read),
+        client_cert: OpenSSL::X509::Certificate.new(Rails.root.join('config/credentials/apiserver.crt').read),
+        ca_file: Rails.root.join('config/credentials/ca.crt').to_s,
+        verify_ssl: OpenSSL::SSL::VERIFY_PEER
+      }
+    }
+  }
+end
+```
+
+The `credentials/*` files above are generated when you create the cluster. For example, if you're using minikube, they're located in `~/.minikube/`.
+
+### command_types
 
 Command types are custom templates that let you create commands more easily. They can be used in the command creation form. `$INPUT` is the value that's passed in from the form input.
 
@@ -123,7 +122,7 @@ config.command_types = [
 ]
 ```
 
-#### container_options
+### container_options
 
 By default, each pod has a single, minimally-configured container. You can easily configure additional container options, which will be merged into the pod's `spec.template.spec.containers[0]`.
 
@@ -142,7 +141,7 @@ config.container_options = {
 }
 ```
 
-#### default_command_type_key
+### default_command_type_key
 
 This will be used to set the default command type when creating new commands.
 
@@ -150,7 +149,7 @@ This will be used to set the default command type when creating new commands.
 config.default_command_type_key = 'goworker'
 ```
 
-#### default_image
+### default_image
 
 This will be used to set the default image when creating new commands.
 
@@ -158,7 +157,7 @@ This will be used to set the default image when creating new commands.
 config.default_image = 'docker.registry.com/myworker:latest'
 ```
 
-#### env_vars
+### env_vars
 
 This will be used to set custom environment variables in pods scheduled by Rhea.
 
@@ -167,6 +166,23 @@ config.env_vars = {
   'FOO' => 'bar'
 }
 ```
+
+Using Rhea as a Rails engine
+---
+
+Rhea is also available as a Rails engine. To install it in a Rails app, include it in your `Gemfile`:
+
+```ruby
+gem 'rhea'
+```
+
+And mount it in `routes.rb`:
+
+```ruby
+mount Rhea::Engine => '/rhea'
+```
+
+You'll then configure Rhea in `config/initializers/rhea.rb`. See [Configuration](#configuration) for details.
 
 Development
 ---
