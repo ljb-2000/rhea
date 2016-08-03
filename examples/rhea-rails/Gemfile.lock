@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/entelo/rhea.git
-  revision: afb58cd4d2d5c162896004be81dd9e8d92ea7cb3
+  revision: 8e319403f811f9e9dd42b8b2f5fbdb57e4a41685
   specs:
     rhea (0.1.0)
       haml (~> 4.0)
@@ -124,7 +124,7 @@ GEM
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
     sass (3.4.22)
-    sass-rails (5.0.5)
+    sass-rails (5.0.6)
       railties (>= 4.0.0, < 6)
       sass (~> 3.1)
       sprockets (>= 2.8, < 4.0)
