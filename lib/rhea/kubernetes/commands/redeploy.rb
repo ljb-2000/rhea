@@ -12,8 +12,8 @@ module Rhea
           command_attributes = command.attributes.slice(:image, :expression)
           controller = Get.new(command_attributes).perform
           process_count = controller.process_count
+          # Scaling down and up pull lastest when imagePullPolicy is "Always"
           Scale.new(command_attributes.merge(process_count: 0)).perform
-          Delete.new(command_attributes).perform
           Scale.new(command_attributes.merge(process_count: process_count)).perform
         end
       end
